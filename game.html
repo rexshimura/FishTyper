@@ -684,6 +684,16 @@
                 spawnSpecificFish('puffer_thin', fish.x, fish.y);
             }
 
+            if (fish.type === 'shark') {
+                spawnSpecificFish('shark-damaged', fish.x, fish.y);
+            }
+
+            if (fish.type === 'jelly') {
+                spawnSpecificFish('jelly-small', fish.x + 120, fish.y);
+                spawnSpecificFish('jelly-small', fish.x - 60, fish.y + 120);
+                // spawnSpecificFish('jelly-small', fish.x + 200, fish.y + 200);
+            }
+
             // Remove old fish
             fish.isDead = true;
             fish.element.remove();  

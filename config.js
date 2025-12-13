@@ -159,19 +159,32 @@ const fishConfig = [
         type: "shark",
         imgSrc: "public/14.png",
         speed: 1.2,
-        minDepth: 600,
+        minDepth: 620,
         maxDepth: null,
-        spawnWeight: 25,    // Rare dangerous enemy
+        spawnWeight: 30,    // Rare dangerous enemy
         lenMin: 7,
         lenMax: 8,
-        scale: 6,
-        scoreBonus: 50,
+        scale: 5.8,
+        scoreBonus: 75,
+        effect: null
+    },
+    {
+        type: "shark-damaged",
+        imgSrc: "public/14-2.png",
+        speed: 2.0,
+        minDepth: 600,
+        maxDepth: null,
+        spawnWeight: 1,    // Rare dangerous enemy
+        lenMin: 5,
+        lenMax: 6,
+        scale: 5.8,
+        scoreBonus: 45,
         effect: null
     },
     {
         type: "xray",
         imgSrc: "public/2.png",
-        speed: 4,
+        speed: 3.7,
         minDepth: 500,
         maxDepth: null,
         spawnWeight: 40,    // Rare dangerous enemy
@@ -185,9 +198,9 @@ const fishConfig = [
         type: "whale",
         imgSrc: "public/15.png",
         speed: 0.5,
-        minDepth: 800,
-        maxDepth: null,
-        spawnWeight: 20,    // Very Rare Boss
+        minDepth: 700,
+        maxDepth: 1200,
+        spawnWeight: 25,    // Very Rare Boss
         lenMin: 10,
         lenMax: 12,
         scale: 8.0,
@@ -197,23 +210,36 @@ const fishConfig = [
     {
         type: "jelly",
         imgSrc: "public/18.png",
-        speed: 0.7,
-        minDepth: 500,
+        speed: 0.4,
+        minDepth: 800,
         maxDepth: null,
-        spawnWeight: 35,    // Very Rare Boss
+        spawnWeight: 30,    // Very Rare Boss
         lenMin: 5,
         lenMax: 5,
         scale: 4,
         scoreBonus: 100,
         effect: null
     },
+    {
+        type: "jelly-small",
+        imgSrc: "public/18.png",
+        speed: 1.5,
+        minDepth: 100,
+        maxDepth: null,
+        spawnWeight: 5,    // Very Rare Boss
+        lenMin: 1,
+        lenMax: 1,
+        scale: 0.8,
+        scoreBonus: 40,
+        effect: null
+    },    
   {
         type: "angler",
         imgSrc: "public/20.png",
         speed: 0.2,
-        minDepth: 710,
+        minDepth: 850,
         maxDepth: null,
-        spawnWeight: 35,    
+        spawnWeight: 20,    
         lenMin: 9,
         lenMax: 11,
         scale: 5.5,
