@@ -4,7 +4,7 @@ const fishConfig = [
         imgSrc: "public/3.png",
         speed: 0.8,
         minDepth: 0,
-        maxDepth: 300,      // STOPS appearing after 300m
+        maxDepth: 400,      // STOPS appearing after 300m
         spawnWeight: 100,   // VERY COMMON
         lenMin: 1,
         lenMax: 1,
@@ -15,10 +15,10 @@ const fishConfig = [
     {
         type: "g_guppy",
         imgSrc: "public/4.png",
-        speed: 1.5,
-        minDepth: 150,
+        speed: 2,
+        minDepth: 300,
         maxDepth: null,     // null means it never stops appearing
-        spawnWeight: 5,     // VERY RARE (5 vs 100)
+        spawnWeight: 6,     // VERY RARE (6 vs 100)
         lenMin: 1,
         lenMax: 1,
         scale: 1.0,
@@ -43,7 +43,7 @@ const fishConfig = [
         imgSrc: "public/6.png",
         speed: 0.6,
         minDepth: 50,
-        maxDepth: 500,      // Stops at 400m
+        maxDepth: 550,      // Stops at 550
         spawnWeight: 70,    // Common
         lenMin: 2,
         lenMax: 2,
@@ -56,23 +56,23 @@ const fishConfig = [
         imgSrc: "public/5.png",
         speed: 0.7,
         minDepth: 80,
-        maxDepth: 200,      // Stops at 400m
-        spawnWeight: 50,    // Common
-        lenMin: 2,
-        lenMax: 2,
+        maxDepth: 400,      // Stops at 400m
+        spawnWeight: 55,    // Common
+        lenMin: 3,
+        lenMax: 3,
         scale: 1.3,
-        scoreBonus: 5,
+        scoreBonus: 10,
         effect: null
     },
     {
         type: "piranha",
         imgSrc: "public/7.png",
-        speed: 2,
+        speed: 2.2,
         minDepth: 100,
-        maxDepth: 400,      // Stops at 400m
-        spawnWeight: 80,    // Common
-        lenMin: 3,
-        lenMax: 3,
+        maxDepth: 500,      // Stops at 400m
+        spawnWeight: 70,    // Common
+        lenMin: 2,
+        lenMax: 2,
         scale: 1.6,
         scoreBonus: 9,
         effect: null
@@ -81,52 +81,52 @@ const fishConfig = [
         type: "bass",
         imgSrc: "public/8.png",
         speed: 1.0,
-        minDepth: 80,
-        maxDepth: 400,      // Stops at 400m
-        spawnWeight: 100,    // Common
+        minDepth: 400,
+        maxDepth: 800,      // Stops at 400m
+        spawnWeight: 60,    // Common
         lenMin: 4,
         lenMax: 4,
         scale: 1.8,
-        scoreBonus: 10,
+        scoreBonus: 17,
         effect: null
     },     
     {
         type: "salmon",
         imgSrc: "public/9.png",
         speed: 1.3,
-        minDepth: 90,
-        maxDepth: 400,      // Stops at 400m
-        spawnWeight: 100,    // Common
+        minDepth: 350,
+        maxDepth: 850,      // Stops at 400m
+        spawnWeight: 95,    // Common
         lenMin: 4,
         lenMax: 5,
         scale: 2.0,
-        scoreBonus: 12,
+        scoreBonus: 19,
         effect: null
     },      
     {
         type: "barracuda",
         imgSrc: "public/10.png",
         speed: 1.5,
-        minDepth: 170,
-        maxDepth: 500,      
-        spawnWeight: 100,    // Common
+        minDepth: 200,
+        maxDepth: 600,      
+        spawnWeight: 85,    // Common
         lenMin: 5,
         lenMax: 5,
         scale: 2.3,
-        scoreBonus: 12,
+        scoreBonus: 16,
         effect: null
     },                
     {
         type: "tuna",
         imgSrc: "public/11.png",
         speed: 2.5,
-        minDepth: 170,
-        maxDepth: null,
+        minDepth: 400,
+        maxDepth: 1000,
         spawnWeight: 50,    // Uncommon
         lenMin: 3,
         lenMax: 5,
         scale: 3.0,
-        scoreBonus: 15,
+        scoreBonus: 22,
         effect: null
     },
     {
@@ -134,21 +134,21 @@ const fishConfig = [
         imgSrc: "public/12.png",
         speed: 0.9,
         minDepth: 100,
-        maxDepth: 500,
+        maxDepth: 800,
         spawnWeight: 10,
         lenMin: 6,
-        lenMax: 6,
+        lenMax: 7,
         scale: 6,
-        scoreBonus: 20,
+        scoreBonus: 25,
         effect: null
     },
     {
         type: "marlin",
         imgSrc: "public/13.png",
-        speed: 3,
-        minDepth: 380,
+        speed: 3.2,
+        minDepth: 800,
         maxDepth: null,
-        spawnWeight: 50,
+        spawnWeight: 40,
         lenMin: 4,
         lenMax: 4,
         scale: 3.2,
@@ -159,12 +159,12 @@ const fishConfig = [
         type: "shark",
         imgSrc: "public/14.png",
         speed: 1.2,
-        minDepth: 620,
+        minDepth: 950,
         maxDepth: null,
-        spawnWeight: 30,    // Rare dangerous enemy
+        spawnWeight: 18,    // Rare dangerous enemy
         lenMin: 7,
         lenMax: 8,
-        scale: 5.8,
+        scale: 5.5,
         scoreBonus: 75,
         effect: null
     },
@@ -172,12 +172,12 @@ const fishConfig = [
         type: "shark-damaged",
         imgSrc: "public/14-2.png",
         speed: 2.0,
-        minDepth: 600,
+        minDepth: 950,
         maxDepth: null,
         spawnWeight: 1,    // Rare dangerous enemy
-        lenMin: 5,
-        lenMax: 6,
-        scale: 5.8,
+        lenMin: 3,
+        lenMax: 4,
+        scale: 5.5,
         scoreBonus: 45,
         effect: null
     },
@@ -185,8 +185,8 @@ const fishConfig = [
         type: "xray",
         imgSrc: "public/2.png",
         speed: 3.7,
-        minDepth: 500,
-        maxDepth: null,
+        minDepth: 600,
+        maxDepth: 1200,
         spawnWeight: 40,    // Rare dangerous enemy
         lenMin: 1,
         lenMax: 1,
@@ -195,38 +195,51 @@ const fishConfig = [
         effect: null
     },
     {
+        type: "xray-faster",
+        imgSrc: "public/2.png",
+        speed: 4.5,
+        minDepth: 1200,
+        maxDepth: null,
+        spawnWeight: 35,    // Rare dangerous enemy
+        lenMin: 1,
+        lenMax: 1,
+        scale: 1.1,
+        scoreBonus: 50,
+        effect: null
+    },
+    {
         type: "whale",
         imgSrc: "public/15.png",
         speed: 0.5,
-        minDepth: 700,
+        minDepth: 750,
         maxDepth: 1200,
         spawnWeight: 25,    // Very Rare Boss
         lenMin: 10,
         lenMax: 12,
         scale: 8.0,
-        scoreBonus: 200,
+        scoreBonus: 230,
         effect: null
     },
     {
         type: "jelly",
         imgSrc: "public/18.png",
         speed: 0.4,
-        minDepth: 800,
+        minDepth: 900,
         maxDepth: null,
-        spawnWeight: 30,    // Very Rare Boss
+        spawnWeight: 25,    // Very Rare Boss
         lenMin: 5,
         lenMax: 5,
         scale: 4,
-        scoreBonus: 100,
+        scoreBonus: 102,
         effect: null
     },
     {
         type: "jelly-small",
         imgSrc: "public/18.png",
         speed: 1.5,
-        minDepth: 100,
+        minDepth: 900,
         maxDepth: null,
-        spawnWeight: 5,    // Very Rare Boss
+        spawnWeight: 1,    // Very Rare Boss
         lenMin: 1,
         lenMax: 1,
         scale: 0.8,
@@ -237,13 +250,13 @@ const fishConfig = [
         type: "angler",
         imgSrc: "public/20.png",
         speed: 0.2,
-        minDepth: 850,
+        minDepth: 1200,
         maxDepth: null,
-        spawnWeight: 20,    
-        lenMin: 9,
-        lenMax: 11,
+        spawnWeight: 15,    
+        lenMin: 12,
+        lenMax: 12,
         scale: 5.5,
-        scoreBonus: 185,
+        scoreBonus: 230,
         effect: null
     }
 ];
