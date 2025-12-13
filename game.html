@@ -9,8 +9,8 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Courier New', Courier, monospace;
-            background-color: #00bfff; /* Starting color: Shallow water */
-            transition: background-color 5s linear; /* Smooth transition for depth */
+            background-color: #00bfff; 
+            transition: background-color 5s linear;
         }
 
         #game-area {
@@ -33,7 +33,43 @@
             z-index: 10;
         }
 
-        /* The Fish Container */
+        #typing-area {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(1); 
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 15px 40px;
+            color: white;
+            font-size: 2rem;
+            min-width: 200px;
+            text-align: center;
+            z-index: 10;
+            transition: all 0.1s ease-out;
+        }
+
+        .success-anim {
+            background: rgba(40, 167, 69, 0.9) !important;
+            border-color: #7aff7a !important;
+            box-shadow: 0 0 20px #7aff7a;
+            transform: translateX(-50%) scale(1.1) !important;
+        }
+
+        .placeholder-text {
+            color: #aaa;
+            font-size: 1rem;
+            opacity: 0.8;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 0.8; }
+        }
+
+        /* Fish Container */
         .fish {
             position: absolute;
             display: flex;
@@ -41,27 +77,75 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
-            white-space: nowrap;
-            transition: transform 0.1s linear;
+            transition: opacity 0.2s; 
         }
 
-        .fish-body {
-            font-size: 3rem; /* Base size, will scale with depth */
+        /* Gold Effect */
+        .effect-gold img {
+            filter: drop-shadow(0 0 10px gold) brightness(1.2);
+            animation: shine 1.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes shine {
+            from { filter: drop-shadow(0 0 5px #ffd700) brightness(1.1); }
+            to { filter: drop-shadow(0 0 25px #ffea00) brightness(1.5); }
+        }
+
+        /* Floating Score Popup */
+        .score-popup {
+            position: absolute;
+            color: #ffff00; 
+            font-weight: 900;
+            font-size: 2.5rem;
+            text-shadow: 3px 3px 0px #000;
+            pointer-events: none; 
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 30; 
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
+        }
+
+        /* Bubble Pop Animation */
+        .bubble-pop {
+            transform: scale(0.8);
+            opacity: 1;
+            animation: bubblePopAnim 0.3s ease-out forwards;
+        }
+
+        @keyframes bubblePopAnim {
+            0% { transform: scale(0.5); opacity: 1; }
+            60% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .fish img {
+            height: auto;
+            image-rendering: pixelated; 
+            transition: width 0.2s; 
         }
 
         .word-box {
             background: rgba(0, 0, 0, 0.6);
-            padding: 2px 8px;
+            color: white;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 1.2rem;
+            font-size: 1.5rem; 
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px black;
+            transition: color 0.1s;
         }
 
         .highlight {
-            color: #ffd700; /* Gold color for typed letters */
+            color: #ffd700;
+            text-shadow: 0 0 10px orange, 0 0 2px white;
+            font-weight: 900;
         }
 
-        /* Game Over Screen */
         #game-over {
             display: none;
             position: absolute;
@@ -88,7 +172,11 @@
         <div id="ui-layer">
             <div>Score: <span id="score">0</span></div>
             <div>Depth: <span id="depth">0</span>m</div>
-            <div>Hearts: <span id="hearts">❤️❤️❤️</span></div>
+            <div style="color: red;">Hearts: <span id="hearts">❤️❤️❤️</span></div>
+        </div>
+
+        <div id="typing-area">
+            <span id="target-display"><span class="placeholder-text">Type to lock on...</span></span>
         </div>
     </div>
 
@@ -100,61 +188,52 @@
         <button onclick="window.location.href='index.html'">Main Menu</button>
     </div>
 
+    <script src="words.js"></script>
+    <script src="config.js"></script>
+
     <script>
-        // --- GAME CONFIGURATION ---
         const gameArea = document.getElementById('game-area');
         const scoreEl = document.getElementById('score');
         const heartsEl = document.getElementById('hearts');
         const depthEl = document.getElementById('depth');
+        const typingArea = document.getElementById('typing-area');
+        const targetDisplay = document.getElementById('target-display');
         const gameOverScreen = document.getElementById('game-over');
         
-        // Word lists based on depth
-        const words = {
-            shallow: ['cat', 'dog', 'sun', 'red', 'sea', 'box', 'eye', 'run', 'net', 'fin'],
-            medium:  ['shark', 'water', 'coral', 'ocean', 'waves', 'shell', 'whale', 'depth', 'swim', 'blue'],
-            deep:    ['submarine', 'jellyfish', 'darkness', 'pressure', 'monster', 'treasure', 'shipwreck', 'leviathan', 'atlantis']
-        };
-
-        const fishSprites = ['🐠', '🐡', '🐟', '🦈', '🦑', '🐋'];
-
-        // Game State
         let score = 0;
         let hearts = 3;
-        let depth = 0; // Meters
+        let depth = 0;
         let gameActive = true;
-        let activeFishes = []; // Array to store fish objects
-        let targetFish = null; // The fish currently being typed
+        let activeFishes = [];
+        let targetFish = null;
         
-        let spawnRate = 2000; // ms
-        let fishSpeed = 1.5; // pixels per frame
+        let spawnRate = gameSettings.initialSpawnRate; 
         let lastSpawn = 0;
         let depthTimer = 0;
 
-        // --- GAME LOOP ---
         function loop(timestamp) {
             if (!gameActive) return;
 
-            // 1. Manage Depth (Increase every frame slightly, or every second)
             if (timestamp - depthTimer > 1000) {
-                depth += 5; 
+                depth += gameSettings.depthIncreaseRate; 
                 depthEl.innerText = depth;
                 depthTimer = timestamp;
                 updateEnvironment();
             }
 
-            // 2. Spawner
             if (timestamp - lastSpawn > spawnRate) {
                 spawnFish();
                 lastSpawn = timestamp;
+                if (spawnRate > gameSettings.minSpawnRate) spawnRate -= 10;
             }
 
-            // 3. Move Fishes & Collision
             activeFishes.forEach((fish, index) => {
+                if (fish.isDead) return;
+
                 fish.x -= fish.speed;
                 fish.element.style.left = fish.x + 'px';
 
-                // Check if fish hit the left wall
-                if (fish.x < -150) {
+                if (fish.x < -200) {
                     takeDamage(index);
                 }
             });
@@ -162,89 +241,101 @@
             requestAnimationFrame(loop);
         }
 
-        // --- MECHANICS ---
-
         function updateEnvironment() {
-            // THE TWIST: As depth increases...
-            // 1. Background gets darker
-            // 2. Fish get faster
-            // 3. Words get longer
-            // 4. Fish get bigger
-            
-            if (depth < 100) {
-                document.body.style.backgroundColor = "#00bfff"; // Shallow
-            } else if (depth < 300) {
-                document.body.style.backgroundColor = "#0077be"; // Medium
-                fishSpeed = 2.0;
-                spawnRate = 1800;
-            } else if (depth < 600) {
-                document.body.style.backgroundColor = "#003366"; // Deep
-                fishSpeed = 2.5;
-                spawnRate = 1600;
-            } else {
-                document.body.style.backgroundColor = "#000022"; // Abyss
-                fishSpeed = 3.0;
-                spawnRate = 1300;
-            }
-        }
-
-        function getWordForDepth() {
-            if (depth < 150) return words.shallow[Math.floor(Math.random() * words.shallow.length)];
-            if (depth < 400) return words.medium[Math.floor(Math.random() * words.medium.length)];
-            return words.deep[Math.floor(Math.random() * words.deep.length)];
+            if (depth < 200) document.body.style.backgroundColor = "#00bfff";
+            else if (depth < 500) document.body.style.backgroundColor = "#0077be";
+            else if (depth < 800) document.body.style.backgroundColor = "#003366";
+            else document.body.style.backgroundColor = "#000022";
         }
 
         function spawnFish() {
-            const word = getWordForDepth();
-            const yPos = Math.random() * (window.innerHeight - 150) + 50; // Random height
-            
-            // Fish size scales with depth
-            let scale = 1;
-            if (depth > 500) scale = 1.5;
-            if (depth > 1000) scale = 2.0;
+            // --- 1. FILTER allowed fish based on Depth (Min & Max) ---
+            const allowedFish = fishConfig.filter(f => {
+                const isDeepEnough = depth >= f.minDepth;
+                const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
+                return isDeepEnough && isNotTooDeep;
+            });
 
+            // Fallback if no fish matches
+            if (allowedFish.length === 0) return; 
+
+            // --- 2. WEIGHTED RANDOM SELECTION ---
+            // Calculate total weight (probability pool)
+            const totalWeight = allowedFish.reduce((sum, f) => sum + (f.spawnWeight || 1), 0);
+            
+            // Pick a random number within that pool
+            let randomValue = Math.random() * totalWeight;
+            
+            // Find which fish corresponds to that number
+            let fishType = allowedFish[0];
+            for (let f of allowedFish) {
+                randomValue -= (f.spawnWeight || 1);
+                if (randomValue <= 0) {
+                    fishType = f;
+                    break;
+                }
+            }
+
+            // --- 3. SPAWN LOGIC ---
+            const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
+            const list = wordList[targetLen] || wordList[1];
+            let contentText = list[Math.floor(Math.random() * list.length)];
+            if(!contentText) contentText = "bug";
+
+            const yPos = Math.random() * (window.innerHeight - 250) + 50; 
             const div = document.createElement('div');
-            div.className = 'fish';
+            
+            const effectClass = fishType.effect ? `effect-${fishType.effect}` : '';
+            div.className = `fish ${effectClass}`;
+
             div.style.left = '100vw';
             div.style.top = yPos + 'px';
-            div.style.transform = `scale(${scale})`;
-
-            // Random Fish Graphic
-            const sprite = fishSprites[Math.floor(Math.random() * fishSprites.length)];
+            
+            const imgWidth = 100 * fishType.scale;
 
             div.innerHTML = `
-                <div class="word-box">${word}</div>
-                <div class="fish-body">${sprite}</div>
+                <div class="word-box">${contentText}</div>
+                <img src="${fishType.imgSrc}" alt="fish" draggable="false" style="width: ${imgWidth}px;">
             `;
 
             gameArea.appendChild(div);
 
             activeFishes.push({
-                word: word,
-                typed: "", // What user has typed so far
+                word: contentText,
+                typed: "",
                 element: div,
                 x: window.innerWidth,
                 y: yPos,
-                speed: fishSpeed + (Math.random() * 0.5) // Slight variance
+                speed: fishType.speed,
+                scale: fishType.scale, 
+                scoreBonus: fishType.scoreBonus || 0,
+                isDead: false
             });
         }
 
         function takeDamage(index) {
-            // Remove heart
             hearts--;
-            let heartString = "";
-            for(let i=0; i<hearts; i++) heartString += "❤️❤️";
-            heartsEl.innerText = heartString || "💔";
+            updateHeartsUI();
 
-            // Remove fish from DOM and Array
             const fish = activeFishes[index];
-            if(fish === targetFish) targetFish = null; // Unlock if we were typing this one
+            if(fish === targetFish) {
+                targetFish = null;
+                targetDisplay.innerHTML = '<span class="placeholder-text">Target Lost...</span>';
+            }
+            
             fish.element.remove();
             activeFishes.splice(index, 1);
 
             if (hearts <= 0) {
                 endGame();
             }
+        }
+
+        function updateHeartsUI() {
+            let heartString = "";
+            for(let i=0; i<hearts; i++) heartString += "❤️❤️";
+            heartsEl.innerText = heartString;
+            if (hearts === 0) heartsEl.innerText = "☠️";
         }
 
         function endGame() {
@@ -254,22 +345,14 @@
             gameOverScreen.style.display = "flex";
         }
 
-        // --- TYPING LOGIC ---
-
         window.addEventListener('keydown', (e) => {
             if (!gameActive) return;
+            if (e.key.length !== 1) return;
+            const key = e.key;
 
-            const key = e.key.toLowerCase();
-            
-            // Only allow letters
-            if (!/^[a-z]$/.test(key)) return;
-
-            // If we don't have a target, try to find one matching the key
             if (!targetFish) {
-                // Find fish that starts with this letter
-                // Priority: Closest to left side (lowest X)
                 const candidate = activeFishes
-                    .filter(f => f.word.startsWith(key))
+                    .filter(f => f.word.startsWith(key) && !f.isDead)
                     .sort((a, b) => a.x - b.x)[0];
 
                 if (candidate) {
@@ -277,7 +360,6 @@
                     processInput(key);
                 }
             } else {
-                // We have a target, check if key matches next letter
                 const nextLetter = targetFish.word[targetFish.typed.length];
                 if (key === nextLetter) {
                     processInput(key);
@@ -287,33 +369,74 @@
 
         function processInput(key) {
             targetFish.typed += key;
-            
-            // Update Visuals (Highlight typed letters)
             const remaining = targetFish.word.substring(targetFish.typed.length);
+            
             targetFish.element.querySelector('.word-box').innerHTML = 
                 `<span class="highlight">${targetFish.typed}</span>${remaining}`;
 
-            // Check if word is complete
+            targetDisplay.innerHTML = `<span class="highlight">${targetFish.typed}</span>${remaining}`;
+
             if (targetFish.typed === targetFish.word) {
                 killFish(targetFish);
                 targetFish = null;
+                triggerSuccessAnim();
+                targetDisplay.innerHTML = '<span class="placeholder-text">Type to lock on...</span>';
             }
+        }
+
+        function triggerSuccessAnim() {
+            typingArea.classList.remove('success-anim');
+            void typingArea.offsetWidth; 
+            typingArea.classList.add('success-anim');
+            setTimeout(() => {
+                typingArea.classList.remove('success-anim');
+            }, 300);
         }
 
         function killFish(fish) {
-            // Calculate Score (2 points per letter)
-            score += (fish.word.length * 2);
+            const points = (fish.word.length * gameSettings.pointsPerChar) + fish.scoreBonus;
+            score += points;
             scoreEl.innerText = score;
 
-            // Remove from array
+            // Spawn Floating Score
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.innerText = `+${points}`;
+            popup.style.left = fish.element.style.left; 
+            popup.style.top = fish.element.style.top;
+            
+            if(fish.scoreBonus > 10) {
+                popup.style.color = 'gold';
+                popup.style.fontSize = '3rem';
+                popup.style.textShadow = '0 0 10px gold';
+            }
+
+            gameArea.appendChild(popup);
+            setTimeout(() => { popup.remove(); }, 1000);
+
+            fish.isDead = true;
+            const bubbleSize = 4 * fish.scale;
+            const randomRot = Math.floor(Math.random() * 90) - 45;
+
+            fish.element.style.transform = `rotate(${randomRot}deg)`;
+            fish.element.innerHTML = `
+                <div class="bubble-pop" style="font-size: ${bubbleSize}rem;">
+                    🫧
+                </div>
+            `;
+
             const index = activeFishes.indexOf(fish);
             if (index > -1) {
-                fish.element.remove();
                 activeFishes.splice(index, 1);
             }
+
+            setTimeout(() => {
+                if (fish.element && fish.element.parentNode) {
+                    fish.element.remove();
+                }
+            }, 300);
         }
 
-        // Start loop
         requestAnimationFrame(loop);
 
     </script>
