@@ -73,7 +73,7 @@ const fishConfig = [
         spawnWeight: 100,    // Common
         lenMin: 4,
         lenMax: 4,
-        scale: 2.2,
+        scale: 1.8,
         scoreBonus: 10,
         effect: null
     },     
@@ -86,7 +86,7 @@ const fishConfig = [
         spawnWeight: 100,    // Common
         lenMin: 4,
         lenMax: 5,
-        scale: 2.2,
+        scale: 2.0,
         scoreBonus: 12,
         effect: null
     },      
@@ -99,7 +99,7 @@ const fishConfig = [
         spawnWeight: 100,    // Common
         lenMin: 5,
         lenMax: 5,
-        scale: 2.8,
+        scale: 2.3,
         scoreBonus: 12,
         effect: null
     },                
