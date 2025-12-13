@@ -248,25 +248,21 @@
             else document.body.style.backgroundColor = "#000022";
         }
 
+        // --- UPDATED SPAWN LOGIC TO PREVENT OVERLAP ---
         function spawnFish() {
-            // --- 1. FILTER allowed fish based on Depth (Min & Max) ---
+            // 1. FILTER allowed fish based on Depth
             const allowedFish = fishConfig.filter(f => {
                 const isDeepEnough = depth >= f.minDepth;
                 const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
                 return isDeepEnough && isNotTooDeep;
             });
 
-            // Fallback if no fish matches
             if (allowedFish.length === 0) return; 
 
-            // --- 2. WEIGHTED RANDOM SELECTION ---
-            // Calculate total weight (probability pool)
+            // 2. WEIGHTED RANDOM SELECTION
             const totalWeight = allowedFish.reduce((sum, f) => sum + (f.spawnWeight || 1), 0);
-            
-            // Pick a random number within that pool
             let randomValue = Math.random() * totalWeight;
             
-            // Find which fish corresponds to that number
             let fishType = allowedFish[0];
             for (let f of allowedFish) {
                 randomValue -= (f.spawnWeight || 1);
@@ -276,15 +272,40 @@
                 }
             }
 
-            // --- 3. SPAWN LOGIC ---
+            // 3. COLLISION CHECKING (The Fix)
+            // We try to find a Y position that isn't too close to existing fish
+            let yPos;
+            let attempts = 0;
+            const maxAttempts = 15; // Give up if screen is too full
+            const minVerticalSpacing = 80; // Pixels of buffer space needed
+            let collision = false;
+
+            do {
+                // Pick a random spot between 50px and bottom
+                yPos = Math.random() * (window.innerHeight - 250) + 50;
+                collision = false;
+
+                // Check against ALL currently swimming fish
+                for (let fish of activeFishes) {
+                    // If the new fish is within 'minVerticalSpacing' pixels of another fish...
+                    if (Math.abs(fish.y - yPos) < minVerticalSpacing) {
+                        collision = true;
+                        break; // ...it's a collision, stop checking and try a new number
+                    }
+                }
+                attempts++;
+            } while (collision && attempts < maxAttempts);
+
+            // If we tried 15 times and still overlap, we skip spawning this frame
+            if (collision) return;
+
+            // 4. CREATE THE ELEMENT
             const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
             const list = wordList[targetLen] || wordList[1];
             let contentText = list[Math.floor(Math.random() * list.length)];
             if(!contentText) contentText = "bug";
 
-            const yPos = Math.random() * (window.innerHeight - 250) + 50; 
             const div = document.createElement('div');
-            
             const effectClass = fishType.effect ? `effect-${fishType.effect}` : '';
             div.className = `fish ${effectClass}`;
 
@@ -305,7 +326,7 @@
                 typed: "",
                 element: div,
                 x: window.innerWidth,
-                y: yPos,
+                y: yPos, // We store the validated Y position here
                 speed: fishType.speed,
                 scale: fishType.scale, 
                 scoreBonus: fishType.scoreBonus || 0,
