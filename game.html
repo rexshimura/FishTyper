@@ -337,7 +337,7 @@
     <script src="words.js"></script>
     <script src="config.js"></script>
 
-    <script>
+<script>
         const gameArea = document.getElementById('game-area');
         const scoreEl = document.getElementById('score');
         const heartsContainer = document.getElementById('hearts-container');
@@ -350,7 +350,7 @@
         
         let score = 0;
         let hearts = 3;
-        let maxHearts = 3; // Defined max
+        let maxHearts = 3;
         let depth = 0;
         let gameActive = true;
         let activeFishes = [];
@@ -397,7 +397,6 @@
             requestAnimationFrame(loop);
         }
 
-        // --- PAUSE LOGIC ---
         pauseBtn.addEventListener('click', () => { togglePause(); pauseBtn.blur(); });
 
         window.addEventListener('keydown', (e) => {
@@ -413,13 +412,12 @@
             isPaused = !isPaused;
 
             if (isPaused) {
-                pauseBtn.innerHTML = "▶"; // Play icon
+                pauseBtn.innerHTML = "▶"; 
                 pauseOverlay.style.display = "flex";
                 pauseStartTime = performance.now();
             } else {
-                pauseBtn.innerHTML = "⏸"; // Pause icon
+                pauseBtn.innerHTML = "⏸"; 
                 pauseOverlay.style.display = "none";
-                
                 const pauseDuration = performance.now() - pauseStartTime;
                 lastSpawn += pauseDuration;
                 depthTimer += pauseDuration;
@@ -433,7 +431,56 @@
             else document.body.style.backgroundColor = "#000022";
         }
 
+        // --- NEW: Helper function to actually create the fish DOM and Object ---
+        function createFishEntity(fishType, x, y) {
+            // Select word based on fish length requirements
+            const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
+            const list = wordList[targetLen] || wordList[1];
+            let contentText = list[Math.floor(Math.random() * list.length)];
+            if(!contentText) contentText = "bug";
+
+            // Create DOM Element
+            const div = document.createElement('div');
+            const effectClass = fishType.effect ? `effect-${fishType.effect}` : '';
+            div.className = `fish ${effectClass}`;
+
+            div.style.left = x + 'px'; // Allow custom X position
+            div.style.top = y + 'px';
+            
+            const imgWidth = 100 * fishType.scale;
+
+            div.innerHTML = `
+                <div class="word-box">${contentText}</div>
+                <img src="${fishType.imgSrc}" alt="fish" draggable="false" style="width: ${imgWidth}px;">
+            `;
+
+            gameArea.appendChild(div);
+
+            // Add to Game Logic
+            activeFishes.push({
+                type: fishType.type, // Store the type (e.g., 'puffer')
+                word: contentText,
+                typed: "",
+                element: div,
+                x: x,
+                y: y,
+                speed: fishType.speed,
+                scale: fishType.scale, 
+                scoreBonus: fishType.scoreBonus || 0,
+                isDead: false
+            });
+        }
+
+        // --- NEW: Helper to spawn a specific fish by name at a location ---
+        function spawnSpecificFish(typeName, x, y) {
+            const fishConfigObj = fishConfig.find(f => f.type === typeName);
+            if(fishConfigObj) {
+                createFishEntity(fishConfigObj, x, y);
+            }
+        }
+
         function spawnFish() {
+            // Filter allowed fish based on depth
             const allowedFish = fishConfig.filter(f => {
                 const isDeepEnough = depth >= f.minDepth;
                 const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
@@ -442,6 +489,7 @@
 
             if (allowedFish.length === 0) return; 
 
+            // Weighted Random Selection
             const totalWeight = allowedFish.reduce((sum, f) => sum + (f.spawnWeight || 1), 0);
             let randomValue = Math.random() * totalWeight;
             
@@ -454,6 +502,7 @@
                 }
             }
 
+            // Y Position Calculation with collision avoidance
             let yPos;
             let attempts = 0;
             const maxAttempts = 15;
@@ -473,39 +522,9 @@
             } while (collision && attempts < maxAttempts);
 
             if (collision) return;
-            
-            const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
-            const list = wordList[targetLen] || wordList[1];
-            let contentText = list[Math.floor(Math.random() * list.length)];
-            if(!contentText) contentText = "bug";
 
-            const div = document.createElement('div');
-            const effectClass = fishType.effect ? `effect-${fishType.effect}` : '';
-            div.className = `fish ${effectClass}`;
-
-            div.style.left = '100vw';
-            div.style.top = yPos + 'px';
-            
-            const imgWidth = 100 * fishType.scale;
-
-            div.innerHTML = `
-                <div class="word-box">${contentText}</div>
-                <img src="${fishType.imgSrc}" alt="fish" draggable="false" style="width: ${imgWidth}px;">
-            `;
-
-            gameArea.appendChild(div);
-
-            activeFishes.push({
-                word: contentText,
-                typed: "",
-                element: div,
-                x: window.innerWidth,
-                y: yPos,
-                speed: fishType.speed,
-                scale: fishType.scale, 
-                scoreBonus: fishType.scoreBonus || 0,
-                isDead: false
-            });
+            // Use helper to create fish at the right edge
+            createFishEntity(fishType, window.innerWidth, yPos);
         }
 
         function takeDamage(index) {
@@ -526,15 +545,12 @@
             }
         }
 
-        // --- NEW HEART RENDER LOGIC ---
         function updateHeartsUI() {
             let html = '';
             for(let i=0; i<maxHearts; i++) {
                 if (i < hearts) {
-                    // Full Heart
                     html += `<span class="heart-icon">❤️</span>`;
                 } else {
-                    // Empty Heart (Greyed out)
                     html += `<span class="heart-icon heart-empty">🖤</span>`;
                 }
             }
@@ -582,7 +598,6 @@
 
             targetDisplay.innerHTML = `<span class="highlight">${targetFish.typed}</span>${remaining}`;
 
-            // TRIGGER POP ANIMATION
             spawnFloatingChar(key);
 
             if (targetFish.typed === targetFish.word) {
@@ -593,20 +608,14 @@
             }
         }
 
-        // --- SPAWN FLOATING CHARACTER ---
         function spawnFloatingChar(char) {
             const span = document.createElement('span');
             span.innerText = char.toUpperCase();
             span.className = 'floating-char';
-            
-            // Randomize slight horizontal offset for visual variety
             const offset = (Math.random() * 40) - 20; 
             span.style.left = `calc(50% + ${offset}px)`;
-            span.style.bottom = "100%"; // Start at top of typing box
-
+            span.style.bottom = "100%"; 
             typingArea.appendChild(span);
-
-            // Clean up after animation
             setTimeout(() => { span.remove(); }, 800);
         }
 
@@ -669,6 +678,13 @@
             gameArea.appendChild(popup);
             setTimeout(() => { popup.remove(); }, 1000);
 
+            // --- PHASE 2 LOGIC STARTS HERE ---
+            if (fish.type === 'puffer') {
+                // Spawn the thin puffer at the EXACT same location (fish.x, fish.y)
+                spawnSpecificFish('puffer_thin', fish.x, fish.y);
+            }
+
+            // Remove old fish
             fish.isDead = true;
             fish.element.remove();  
 
@@ -679,7 +695,6 @@
         }
 
         requestAnimationFrame(loop);
-
     </script>
 </body>
 </html>
