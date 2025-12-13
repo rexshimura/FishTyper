@@ -17,6 +17,40 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- WATER EFFECTS --- */
+        /* This creates the underwater "Sunlight Rays" look */
+        .water-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0) 60%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* This creates the moving "Ripple" effect */
+        .caustics {
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: transparent;
+            background-image: 
+                radial-gradient(rgba(255,255,255,0.1) 20%, transparent 20%),
+                radial-gradient(rgba(255,255,255,0.1) 20%, transparent 20%);
+            background-position: 0 0, 50px 50px;
+            background-size: 100px 100px;
+            animation: ripple 8s linear infinite;
+            z-index: 1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-50px) rotate(5deg); }
         }
 
         /* HUD Styling */
@@ -27,10 +61,28 @@
             right: 20px;
             display: flex;
             justify-content: space-between;
+            align-items: center; 
             color: white;
             font-size: 1.5rem;
             text-shadow: 2px 2px 0 #000;
-            z-index: 10;
+            z-index: 20; /* Higher than water overlay */
+            pointer-events: none; 
+        }
+
+        #pause-btn {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #pause-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         #typing-area {
@@ -46,7 +98,7 @@
             font-size: 2rem;
             min-width: 200px;
             text-align: center;
-            z-index: 10;
+            z-index: 20;
             transition: all 0.1s ease-out;
         }
 
@@ -78,6 +130,7 @@
             justify-content: center;
             color: white;
             transition: opacity 0.2s; 
+            z-index: 5;
         }
 
         /* Gold Effect */
@@ -108,17 +161,20 @@
             100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
         }
 
-        /* Bubble Pop Animation */
-        .bubble-pop {
-            transform: scale(0.8);
-            opacity: 1;
-            animation: bubblePopAnim 0.3s ease-out forwards;
+        /* --- NEW EXPLOSION PARTICLES --- */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 25;
+            animation: explode 0.6s ease-out forwards;
         }
 
-        @keyframes bubblePopAnim {
-            0% { transform: scale(0.5); opacity: 1; }
-            60% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
         }
 
         .fish img {
@@ -155,22 +211,48 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 20;
+            z-index: 50;
+        }
+        
+        #pause-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px black;
         }
 
-        button {
+        .menu-btn {
             padding: 10px 20px;
             font-size: 1.5rem;
             cursor: pointer;
             margin-top: 20px;
+            pointer-events: auto;
+            background: #fff;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
         }
     </style>
 </head>
 <body>
 
     <div id="game-area">
+        <div class="water-overlay"></div>
+        <div class="caustics"></div>
+
         <div id="ui-layer">
             <div>Score: <span id="score">0</span></div>
+            
+            <button id="pause-btn">⏸️ (Tab)</button>
+            
             <div>Depth: <span id="depth">0</span>m</div>
             <div style="color: red;">Hearts: <span id="hearts">❤️❤️❤️</span></div>
         </div>
@@ -178,14 +260,19 @@
         <div id="typing-area">
             <span id="target-display"><span class="placeholder-text">Type to lock on...</span></span>
         </div>
+        
+        <div id="pause-overlay">
+            <div>PAUSED</div>
+            <button class="menu-btn" onclick="togglePause()" style="font-size: 1rem; margin-top: 20px;">Resume</button>
+        </div>
     </div>
 
     <div id="game-over">
         <h1 style="color: #ff4757;">GAME OVER</h1>
         <h2>Final Score: <span id="final-score">0</span></h2>
         <h2>Max Depth: <span id="final-depth">0</span>m</h2>
-        <button onclick="location.reload()">Try Again</button>
-        <button onclick="window.location.href='index.html'">Main Menu</button>
+        <button class="menu-btn" onclick="location.reload()">Try Again</button>
+        <button class="menu-btn" onclick="window.location.href='index.html'">Main Menu</button>
     </div>
 
     <script src="words.js"></script>
@@ -199,6 +286,8 @@
         const typingArea = document.getElementById('typing-area');
         const targetDisplay = document.getElementById('target-display');
         const gameOverScreen = document.getElementById('game-over');
+        const pauseBtn = document.getElementById('pause-btn');
+        const pauseOverlay = document.getElementById('pause-overlay');
         
         let score = 0;
         let hearts = 3;
@@ -211,8 +300,18 @@
         let lastSpawn = 0;
         let depthTimer = 0;
 
+        // --- PAUSE VARIABLES ---
+        let isPaused = false;
+        let pauseStartTime = 0;
+
         function loop(timestamp) {
             if (!gameActive) return;
+
+            // IF PAUSED: just request next frame and exit
+            if (isPaused) {
+                requestAnimationFrame(loop);
+                return;
+            }
 
             if (timestamp - depthTimer > 1000) {
                 depth += gameSettings.depthIncreaseRate; 
@@ -241,6 +340,45 @@
             requestAnimationFrame(loop);
         }
 
+        // --- PAUSE LOGIC ---
+        pauseBtn.addEventListener('click', () => {
+             togglePause();
+             // Blur button so Space/Enter doesn't trigger it again immediately
+             pauseBtn.blur();
+        });
+
+        // Key Listeners for Pause (ESC and TAB)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                togglePause();
+            }
+            // TAB support
+            if (e.key === "Tab") {
+                e.preventDefault(); // Stop tab from moving focus to URL bar/buttons
+                togglePause();
+            }
+        });
+
+        function togglePause() {
+            if(!gameActive) return;
+
+            isPaused = !isPaused;
+
+            if (isPaused) {
+                pauseBtn.innerText = "▶️";
+                pauseOverlay.style.display = "flex";
+                pauseStartTime = performance.now();
+            } else {
+                pauseBtn.innerText = "⏸️ (Tab)";
+                pauseOverlay.style.display = "none";
+                
+                // Adjust timers
+                const pauseDuration = performance.now() - pauseStartTime;
+                lastSpawn += pauseDuration;
+                depthTimer += pauseDuration;
+            }
+        }
+
         function updateEnvironment() {
             if (depth < 200) document.body.style.backgroundColor = "#00bfff";
             else if (depth < 500) document.body.style.backgroundColor = "#0077be";
@@ -248,9 +386,7 @@
             else document.body.style.backgroundColor = "#000022";
         }
 
-        // --- UPDATED SPAWN LOGIC TO PREVENT OVERLAP ---
         function spawnFish() {
-            // 1. FILTER allowed fish based on Depth
             const allowedFish = fishConfig.filter(f => {
                 const isDeepEnough = depth >= f.minDepth;
                 const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
@@ -259,7 +395,6 @@
 
             if (allowedFish.length === 0) return; 
 
-            // 2. WEIGHTED RANDOM SELECTION
             const totalWeight = allowedFish.reduce((sum, f) => sum + (f.spawnWeight || 1), 0);
             let randomValue = Math.random() * totalWeight;
             
@@ -272,34 +407,27 @@
                 }
             }
 
-            // 3. COLLISION CHECKING (The Fix)
-            // We try to find a Y position that isn't too close to existing fish
+            // --- COLLISION AVOIDANCE ---
             let yPos;
             let attempts = 0;
-            const maxAttempts = 15; // Give up if screen is too full
-            const minVerticalSpacing = 80; // Pixels of buffer space needed
+            const maxAttempts = 15;
+            const minVerticalSpacing = 80;
             let collision = false;
 
             do {
-                // Pick a random spot between 50px and bottom
                 yPos = Math.random() * (window.innerHeight - 250) + 50;
                 collision = false;
-
-                // Check against ALL currently swimming fish
                 for (let fish of activeFishes) {
-                    // If the new fish is within 'minVerticalSpacing' pixels of another fish...
                     if (Math.abs(fish.y - yPos) < minVerticalSpacing) {
                         collision = true;
-                        break; // ...it's a collision, stop checking and try a new number
+                        break;
                     }
                 }
                 attempts++;
             } while (collision && attempts < maxAttempts);
 
-            // If we tried 15 times and still overlap, we skip spawning this frame
             if (collision) return;
-
-            // 4. CREATE THE ELEMENT
+            
             const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
             const list = wordList[targetLen] || wordList[1];
             let contentText = list[Math.floor(Math.random() * list.length)];
@@ -326,11 +454,12 @@
                 typed: "",
                 element: div,
                 x: window.innerWidth,
-                y: yPos, // We store the validated Y position here
+                y: yPos,
                 speed: fishType.speed,
                 scale: fishType.scale, 
                 scoreBonus: fishType.scoreBonus || 0,
-                isDead: false
+                isDead: false,
+                width: imgWidth // Store width for explosion center calculation
             });
         }
 
@@ -364,10 +493,13 @@
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-depth').innerText = depth;
             gameOverScreen.style.display = "flex";
+            pauseBtn.style.display = "none";
         }
 
         window.addEventListener('keydown', (e) => {
             if (!gameActive) return;
+            if (isPaused) return; 
+
             if (e.key.length !== 1) return;
             const key = e.key;
 
@@ -414,10 +546,52 @@
             }, 300);
         }
 
+        // --- NEW PARTICLE EXPLOSION SYSTEM ---
+        function createExplosion(x, y, color) {
+            const particleCount = 12; // Number of pieces
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                
+                // Position at fish center
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                
+                // Color variation
+                p.style.background = Math.random() > 0.5 ? color : '#fff';
+                
+                // Calculate random direction
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 80 + 40; // Distance to fly
+                
+                const dx = Math.cos(angle) * velocity + 'px';
+                const dy = Math.sin(angle) * velocity + 'px';
+
+                // Pass direction to CSS variable
+                p.style.setProperty('--dx', dx);
+                p.style.setProperty('--dy', dy);
+
+                gameArea.appendChild(p);
+
+                // Cleanup particle after animation
+                setTimeout(() => { p.remove(); }, 600);
+            }
+        }
+
         function killFish(fish) {
             const points = (fish.word.length * gameSettings.pointsPerChar) + fish.scoreBonus;
             score += points;
             scoreEl.innerText = score;
+
+            // Calculate center of fish for explosion
+            // We use fish.element.offsetLeft but since it's absolute, we use current visual pos
+            const rect = fish.element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Trigger Explosion
+            const explosionColor = fish.scoreBonus > 10 ? 'gold' : '#00bfff';
+            createExplosion(centerX, centerY, explosionColor);
 
             // Spawn Floating Score
             const popup = document.createElement('div');
@@ -435,27 +609,14 @@
             gameArea.appendChild(popup);
             setTimeout(() => { popup.remove(); }, 1000);
 
+            // Remove Fish Immediately
             fish.isDead = true;
-            const bubbleSize = 4 * fish.scale;
-            const randomRot = Math.floor(Math.random() * 90) - 45;
-
-            fish.element.style.transform = `rotate(${randomRot}deg)`;
-            fish.element.innerHTML = `
-                <div class="bubble-pop" style="font-size: ${bubbleSize}rem;">
-                    🫧
-                </div>
-            `;
+            fish.element.remove();
 
             const index = activeFishes.indexOf(fish);
             if (index > -1) {
                 activeFishes.splice(index, 1);
             }
-
-            setTimeout(() => {
-                if (fish.element && fish.element.parentNode) {
-                    fish.element.remove();
-                }
-            }, 300);
         }
 
         requestAnimationFrame(loop);
