@@ -21,7 +21,6 @@
         }
 
         /* --- WATER EFFECTS --- */
-        /* This creates the underwater "Sunlight Rays" look */
         .water-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -32,7 +31,6 @@
             pointer-events: none;
         }
 
-        /* This creates the moving "Ripple" effect */
         .caustics {
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
@@ -53,72 +51,117 @@
             100% { transform: translateY(-50px) rotate(5deg); }
         }
 
-        /* HUD Styling */
-        #ui-layer {
+        /* --- NEW HUD LAYOUT --- */
+        #hud-container {
             position: absolute;
             top: 20px;
             left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center; 
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #fff;
             color: white;
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 0 #000;
-            z-index: 20; /* Higher than water overlay */
-            pointer-events: none; 
+            font-size: 1.2rem;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
         }
 
+        .hud-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hud-label {
+            font-weight: bold;
+            color: #ccc;
+            width: 70px; /* Align text */
+        }
+
+        .heart-icon {
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .heart-empty {
+            filter: grayscale(100%) brightness(50%);
+            opacity: 0.6;
+        }
+
+        /* --- PAUSE BUTTON (Top Right) --- */
         #pause-btn {
-            pointer-events: auto;
-            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.6);
             border: 2px solid white;
             color: white;
-            font-size: 1.5rem;
-            padding: 5px 15px;
-            border-radius: 5px;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background 0.2s;
         }
 
         #pause-btn:hover {
             background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
         }
 
+        /* --- TYPING AREA & POP ANIMATION --- */
         #typing-area {
             position: absolute;
-            bottom: 30px;
+            bottom: 40px;
             left: 50%;
-            transform: translateX(-50%) scale(1); 
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid white;
-            border-radius: 10px;
-            padding: 15px 40px;
+            transform: translateX(-50%); 
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 15px 50px;
             color: white;
-            font-size: 2rem;
-            min-width: 200px;
+            font-size: 2.2rem;
+            min-width: 250px;
             text-align: center;
             z-index: 20;
-            transition: all 0.1s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .floating-char {
+            position: absolute;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: floatChar 0.8s ease-out forwards;
+            text-shadow: 0 0 10px gold;
+            z-index: 21;
+        }
+
+        @keyframes floatChar {
+            0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -40px) scale(1.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -80px) scale(1); opacity: 0; }
         }
 
         .success-anim {
-            background: rgba(40, 167, 69, 0.9) !important;
             border-color: #7aff7a !important;
-            box-shadow: 0 0 20px #7aff7a;
-            transform: translateX(-50%) scale(1.1) !important;
+            box-shadow: 0 0 30px #7aff7a !important;
         }
 
         .placeholder-text {
-            color: #aaa;
-            font-size: 1rem;
-            opacity: 0.8;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 0.8; }
+            color: #666;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         /* Fish Container */
@@ -129,7 +172,6 @@
             align-items: center;
             justify-content: center;
             color: white;
-            transition: opacity 0.2s; 
             z-index: 5;
         }
 
@@ -144,7 +186,7 @@
             to { filter: drop-shadow(0 0 25px #ffea00) brightness(1.5); }
         }
 
-        /* Floating Score Popup */
+        /* Score Popups */
         .score-popup {
             position: absolute;
             color: #ffff00; 
@@ -161,7 +203,7 @@
             100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
         }
 
-        /* --- NEW EXPLOSION PARTICLES --- */
+        /* Particle Explosion */
         .particle {
             position: absolute;
             width: 8px;
@@ -193,7 +235,6 @@
             margin-bottom: 5px;
             white-space: nowrap;
             text-shadow: 1px 1px 2px black;
-            transition: color 0.1s;
         }
 
         .highlight {
@@ -218,27 +259,32 @@
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 40;
-            font-size: 3rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px black;
+            backdrop-filter: blur(5px);
         }
 
         .menu-btn {
-            padding: 10px 20px;
+            padding: 10px 30px;
             font-size: 1.5rem;
             cursor: pointer;
             margin-top: 20px;
             pointer-events: auto;
             background: #fff;
             border: none;
-            border-radius: 4px;
-            font-family: inherit;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #333;
+            transition: transform 0.1s;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
         }
     </style>
 </head>
@@ -248,27 +294,40 @@
         <div class="water-overlay"></div>
         <div class="caustics"></div>
 
-        <div id="ui-layer">
-            <div>Score: <span id="score">0</span></div>
-            
-            <button id="pause-btn">⏸️ (Tab)</button>
-            
-            <div>Depth: <span id="depth">0</span>m</div>
-            <div style="color: red;">Hearts: <span id="hearts">❤️❤️❤️</span></div>
+        <div id="hud-container">
+            <div class="hud-row">
+                <div class="hud-label">SCORE</div>
+                <div id="score" style="color: #ffd700;">0</div>
+            </div>
+            <div class="hud-row">
+                <div class="hud-label">DEPTH</div>
+                <div id="depth" style="color: #00bfff;">0m</div>
+            </div>
+            <div class="hud-row">
+                <div class="hud-label">HP</div>
+                <div id="hearts-container">
+                    <span class="heart-icon">❤️</span>
+                    <span class="heart-icon">❤️</span>
+                    <span class="heart-icon">❤️</span>
+                </div>
+            </div>
         </div>
 
+        <button id="pause-btn" title="Pause (Tab)">⏸</button>
+
         <div id="typing-area">
-            <span id="target-display"><span class="placeholder-text">Type to lock on...</span></span>
+            <span id="target-display"><span class="placeholder-text">WAITING FOR TARGET...</span></span>
         </div>
         
         <div id="pause-overlay">
-            <div>PAUSED</div>
-            <button class="menu-btn" onclick="togglePause()" style="font-size: 1rem; margin-top: 20px;">Resume</button>
+            <h1 style="font-size: 4rem; margin: 0;">PAUSED</h1>
+            <p style="margin-top: 10px; opacity: 0.7;">Press TAB to Resume</p>
+            <button class="menu-btn" onclick="togglePause()">RESUME</button>
         </div>
     </div>
 
     <div id="game-over">
-        <h1 style="color: #ff4757;">GAME OVER</h1>
+        <h1 style="color: #ff4757; font-size: 4rem;">GAME OVER</h1>
         <h2>Final Score: <span id="final-score">0</span></h2>
         <h2>Max Depth: <span id="final-depth">0</span>m</h2>
         <button class="menu-btn" onclick="location.reload()">Try Again</button>
@@ -281,7 +340,7 @@
     <script>
         const gameArea = document.getElementById('game-area');
         const scoreEl = document.getElementById('score');
-        const heartsEl = document.getElementById('hearts');
+        const heartsContainer = document.getElementById('hearts-container');
         const depthEl = document.getElementById('depth');
         const typingArea = document.getElementById('typing-area');
         const targetDisplay = document.getElementById('target-display');
@@ -291,6 +350,7 @@
         
         let score = 0;
         let hearts = 3;
+        let maxHearts = 3; // Defined max
         let depth = 0;
         let gameActive = true;
         let activeFishes = [];
@@ -300,14 +360,11 @@
         let lastSpawn = 0;
         let depthTimer = 0;
 
-        // --- PAUSE VARIABLES ---
         let isPaused = false;
         let pauseStartTime = 0;
 
         function loop(timestamp) {
             if (!gameActive) return;
-
-            // IF PAUSED: just request next frame and exit
             if (isPaused) {
                 requestAnimationFrame(loop);
                 return;
@@ -315,7 +372,7 @@
 
             if (timestamp - depthTimer > 1000) {
                 depth += gameSettings.depthIncreaseRate; 
-                depthEl.innerText = depth;
+                depthEl.innerText = depth + "m";
                 depthTimer = timestamp;
                 updateEnvironment();
             }
@@ -341,20 +398,11 @@
         }
 
         // --- PAUSE LOGIC ---
-        pauseBtn.addEventListener('click', () => {
-             togglePause();
-             // Blur button so Space/Enter doesn't trigger it again immediately
-             pauseBtn.blur();
-        });
+        pauseBtn.addEventListener('click', () => { togglePause(); pauseBtn.blur(); });
 
-        // Key Listeners for Pause (ESC and TAB)
         window.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") {
-                togglePause();
-            }
-            // TAB support
-            if (e.key === "Tab") {
-                e.preventDefault(); // Stop tab from moving focus to URL bar/buttons
+            if (e.key === "Escape" || e.key === "Tab") {
+                e.preventDefault();
                 togglePause();
             }
         });
@@ -365,14 +413,13 @@
             isPaused = !isPaused;
 
             if (isPaused) {
-                pauseBtn.innerText = "▶️";
+                pauseBtn.innerHTML = "▶"; // Play icon
                 pauseOverlay.style.display = "flex";
                 pauseStartTime = performance.now();
             } else {
-                pauseBtn.innerText = "⏸️ (Tab)";
+                pauseBtn.innerHTML = "⏸"; // Pause icon
                 pauseOverlay.style.display = "none";
                 
-                // Adjust timers
                 const pauseDuration = performance.now() - pauseStartTime;
                 lastSpawn += pauseDuration;
                 depthTimer += pauseDuration;
@@ -407,7 +454,6 @@
                 }
             }
 
-            // --- COLLISION AVOIDANCE ---
             let yPos;
             let attempts = 0;
             const maxAttempts = 15;
@@ -458,8 +504,7 @@
                 speed: fishType.speed,
                 scale: fishType.scale, 
                 scoreBonus: fishType.scoreBonus || 0,
-                isDead: false,
-                width: imgWidth // Store width for explosion center calculation
+                isDead: false
             });
         }
 
@@ -481,11 +526,19 @@
             }
         }
 
+        // --- NEW HEART RENDER LOGIC ---
         function updateHeartsUI() {
-            let heartString = "";
-            for(let i=0; i<hearts; i++) heartString += "❤️❤️";
-            heartsEl.innerText = heartString;
-            if (hearts === 0) heartsEl.innerText = "☠️";
+            let html = '';
+            for(let i=0; i<maxHearts; i++) {
+                if (i < hearts) {
+                    // Full Heart
+                    html += `<span class="heart-icon">❤️</span>`;
+                } else {
+                    // Empty Heart (Greyed out)
+                    html += `<span class="heart-icon heart-empty">🖤</span>`;
+                }
+            }
+            heartsContainer.innerHTML = html;
         }
 
         function endGame() {
@@ -529,12 +582,32 @@
 
             targetDisplay.innerHTML = `<span class="highlight">${targetFish.typed}</span>${remaining}`;
 
+            // TRIGGER POP ANIMATION
+            spawnFloatingChar(key);
+
             if (targetFish.typed === targetFish.word) {
                 killFish(targetFish);
                 targetFish = null;
                 triggerSuccessAnim();
-                targetDisplay.innerHTML = '<span class="placeholder-text">Type to lock on...</span>';
+                targetDisplay.innerHTML = '<span class="placeholder-text">WAITING...</span>';
             }
+        }
+
+        // --- SPAWN FLOATING CHARACTER ---
+        function spawnFloatingChar(char) {
+            const span = document.createElement('span');
+            span.innerText = char.toUpperCase();
+            span.className = 'floating-char';
+            
+            // Randomize slight horizontal offset for visual variety
+            const offset = (Math.random() * 40) - 20; 
+            span.style.left = `calc(50% + ${offset}px)`;
+            span.style.bottom = "100%"; // Start at top of typing box
+
+            typingArea.appendChild(span);
+
+            // Clean up after animation
+            setTimeout(() => { span.remove(); }, 800);
         }
 
         function triggerSuccessAnim() {
@@ -546,34 +619,25 @@
             }, 300);
         }
 
-        // --- NEW PARTICLE EXPLOSION SYSTEM ---
         function createExplosion(x, y, color) {
-            const particleCount = 12; // Number of pieces
+            const particleCount = 12;
             for (let i = 0; i < particleCount; i++) {
                 const p = document.createElement('div');
                 p.classList.add('particle');
-                
-                // Position at fish center
                 p.style.left = x + 'px';
                 p.style.top = y + 'px';
-                
-                // Color variation
                 p.style.background = Math.random() > 0.5 ? color : '#fff';
                 
-                // Calculate random direction
                 const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 80 + 40; // Distance to fly
+                const velocity = Math.random() * 80 + 40;
                 
                 const dx = Math.cos(angle) * velocity + 'px';
                 const dy = Math.sin(angle) * velocity + 'px';
 
-                // Pass direction to CSS variable
                 p.style.setProperty('--dx', dx);
                 p.style.setProperty('--dy', dy);
 
                 gameArea.appendChild(p);
-
-                // Cleanup particle after animation
                 setTimeout(() => { p.remove(); }, 600);
             }
         }
@@ -583,17 +647,13 @@
             score += points;
             scoreEl.innerText = score;
 
-            // Calculate center of fish for explosion
-            // We use fish.element.offsetLeft but since it's absolute, we use current visual pos
             const rect = fish.element.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
 
-            // Trigger Explosion
             const explosionColor = fish.scoreBonus > 10 ? 'gold' : '#00bfff';
             createExplosion(centerX, centerY, explosionColor);
 
-            // Spawn Floating Score
             const popup = document.createElement('div');
             popup.className = 'score-popup';
             popup.innerText = `+${points}`;
@@ -609,9 +669,8 @@
             gameArea.appendChild(popup);
             setTimeout(() => { popup.remove(); }, 1000);
 
-            // Remove Fish Immediately
             fish.isDead = true;
-            fish.element.remove();
+            fish.element.remove();  
 
             const index = activeFishes.indexOf(fish);
             if (index > -1) {
