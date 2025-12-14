@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FishTyper - Game</title>
+    <title>FishTyper - Game (Dev Mode)</title>
     <style>
         body {
             margin: 0;
@@ -51,7 +51,7 @@
             100% { transform: translateY(-50px) rotate(5deg); }
         }
 
-        /* --- NEW HUD LAYOUT --- */
+        /* --- HUD LAYOUT --- */
         #hud-container {
             position: absolute;
             top: 20px;
@@ -79,7 +79,7 @@
         .hud-label {
             font-weight: bold;
             color: #ccc;
-            width: 70px; /* Align text */
+            width: 70px;
         }
 
         .heart-icon {
@@ -92,7 +92,7 @@
             opacity: 0.6;
         }
 
-        /* --- PAUSE BUTTON (Top Right) --- */
+        /* --- PAUSE BUTTON --- */
         #pause-btn {
             position: absolute;
             top: 20px;
@@ -117,7 +117,83 @@
             transform: scale(1.1);
         }
 
-        /* --- TYPING AREA & POP ANIMATION --- */
+        /* --- DEV MODE STYLES --- */
+        #dev-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            font-family: monospace;
+        }
+
+        #dev-toggle-btn {
+            background: #333;
+            color: #fff;
+            border: 2px solid #555;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        
+        #dev-toggle-btn:hover {
+            background: #444;
+        }
+
+        #dev-menu {
+            display: none;
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            color: #00ff00;
+            width: 250px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .dev-header {
+            border-bottom: 1px solid #00ff00;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .dev-spawner-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dev-spawn-btn {
+            background: #111;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            flex: 1 1 40%;
+            text-transform: capitalize;
+        }
+
+        .dev-spawn-btn:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        .dev-active-indicator {
+            color: yellow;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- TYPING AREA --- */
         #typing-area {
             position: absolute;
             bottom: 40px;
@@ -315,6 +391,16 @@
 
         <button id="pause-btn" title="Pause (Tab)">⏸</button>
 
+        <div id="dev-container">
+            <button id="dev-toggle-btn" onclick="toggleDevMode()">🛠️ Dev Mode</button>
+            <div id="dev-menu">
+                <div class="dev-header">DEVELOPER MENU</div>
+                <div class="dev-active-indicator">Invincibility: <b>ON</b></div>
+                <div class="dev-spawner-grid" id="spawner-list">
+                    </div>
+            </div>
+        </div>
+
         <div id="typing-area">
             <span id="target-display"><span class="placeholder-text">WAITING FOR TARGET...</span></span>
         </div>
@@ -348,6 +434,11 @@
         const pauseBtn = document.getElementById('pause-btn');
         const pauseOverlay = document.getElementById('pause-overlay');
         
+        // DEV MODE ELEMENTS
+        const devMenu = document.getElementById('dev-menu');
+        const devToggleBtn = document.getElementById('dev-toggle-btn');
+        const spawnerList = document.getElementById('spawner-list');
+        
         let score = 0;
         let hearts = 3;
         let maxHearts = 3;
@@ -362,6 +453,7 @@
 
         let isPaused = false;
         let pauseStartTime = 0;
+        let isDevMode = false;
 
         function loop(timestamp) {
             if (!gameActive) return;
@@ -406,6 +498,45 @@
             }
         });
 
+        // --- DEV MODE FUNCTIONS ---
+        function toggleDevMode() {
+            isDevMode = !isDevMode;
+            if (isDevMode) {
+                devMenu.style.display = 'block';
+                devToggleBtn.style.backgroundColor = '#00ff00';
+                devToggleBtn.style.color = 'black';
+                populateDevSpawners();
+            } else {
+                devMenu.style.display = 'none';
+                devToggleBtn.style.backgroundColor = '#333';
+                devToggleBtn.style.color = 'white';
+            }
+            // Remove focus so typing doesn't trigger button
+            devToggleBtn.blur();
+        }
+
+        function populateDevSpawners() {
+            spawnerList.innerHTML = '';
+            if (typeof fishConfig !== 'undefined') {
+                fishConfig.forEach(fish => {
+                    const btn = document.createElement('button');
+                    btn.className = 'dev-spawn-btn';
+                    btn.innerText = fish.type;
+                    btn.title = `Spawn ${fish.type}`;
+                    btn.onclick = () => {
+                        // Spawn at random height
+                        const randY = Math.random() * (window.innerHeight - 200) + 100;
+                        spawnSpecificFish(fish.type, window.innerWidth, randY);
+                        // Refocus game to keep typing
+                        window.focus();
+                    };
+                    spawnerList.appendChild(btn);
+                });
+            } else {
+                spawnerList.innerHTML = '<div style="color:red">Config not loaded</div>';
+            }
+        }
+
         function togglePause() {
             if(!gameActive) return;
 
@@ -431,7 +562,6 @@
             else document.body.style.backgroundColor = "#000022";
         }
 
-        // --- NEW: Helper function to actually create the fish DOM and Object ---
         function createFishEntity(fishType, x, y) {
             // Select word based on fish length requirements
             const targetLen = Math.floor(Math.random() * (fishType.lenMax - fishType.lenMin + 1)) + fishType.lenMin;
@@ -444,7 +574,7 @@
             const effectClass = fishType.effect ? `effect-${fishType.effect}` : '';
             div.className = `fish ${effectClass}`;
 
-            div.style.left = x + 'px'; // Allow custom X position
+            div.style.left = x + 'px'; 
             div.style.top = y + 'px';
             
             const imgWidth = 100 * fishType.scale;
@@ -456,9 +586,8 @@
 
             gameArea.appendChild(div);
 
-            // Add to Game Logic
             activeFishes.push({
-                type: fishType.type, // Store the type (e.g., 'puffer')
+                type: fishType.type,
                 word: contentText,
                 typed: "",
                 element: div,
@@ -471,7 +600,6 @@
             });
         }
 
-        // --- NEW: Helper to spawn a specific fish by name at a location ---
         function spawnSpecificFish(typeName, x, y) {
             const fishConfigObj = fishConfig.find(f => f.type === typeName);
             if(fishConfigObj) {
@@ -480,7 +608,6 @@
         }
 
         function spawnFish() {
-            // Filter allowed fish based on depth
             const allowedFish = fishConfig.filter(f => {
                 const isDeepEnough = depth >= f.minDepth;
                 const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
@@ -489,7 +616,6 @@
 
             if (allowedFish.length === 0) return; 
 
-            // Weighted Random Selection
             const totalWeight = allowedFish.reduce((sum, f) => sum + (f.spawnWeight || 1), 0);
             let randomValue = Math.random() * totalWeight;
             
@@ -502,7 +628,6 @@
                 }
             }
 
-            // Y Position Calculation with collision avoidance
             let yPos;
             let attempts = 0;
             const maxAttempts = 15;
@@ -523,22 +648,43 @@
 
             if (collision) return;
 
-            // Use helper to create fish at the right edge
             createFishEntity(fishType, window.innerWidth, yPos);
         }
 
         function takeDamage(index) {
-            hearts--;
-            updateHeartsUI();
-
             const fish = activeFishes[index];
+            
+            // Clean up target logic if this fish was the target
             if(fish === targetFish) {
                 targetFish = null;
                 targetDisplay.innerHTML = '<span class="placeholder-text">Target Lost...</span>';
             }
-            
+
+            // Remove visual element
             fish.element.remove();
             activeFishes.splice(index, 1);
+
+            // DEV MODE INVINCIBILITY CHECK
+            if (isDevMode) {
+                // We return here so hearts are NOT reduced and game doesn't end.
+                // We create a small "Block" effect to show invincibility worked
+                const blockMsg = document.createElement('div');
+                blockMsg.innerText = "BLOCKED";
+                blockMsg.style.position = "absolute";
+                blockMsg.style.left = "20px";
+                blockMsg.style.bottom = "100px";
+                blockMsg.style.color = "#00ff00";
+                blockMsg.style.fontWeight = "bold";
+                blockMsg.style.fontSize = "1.5rem";
+                blockMsg.style.textShadow = "0 0 5px black";
+                blockMsg.style.animation = "floatUp 0.5s ease-out forwards";
+                gameArea.appendChild(blockMsg);
+                setTimeout(() => blockMsg.remove(), 500);
+                return;
+            }
+
+            hearts--;
+            updateHeartsUI();
 
             if (hearts <= 0) {
                 endGame();
@@ -680,8 +826,11 @@
 
             // --- PHASE 2 LOGIC STARTS HERE ---
             if (fish.type === 'puffer') {
-                // Spawn the thin puffer at the EXACT same location (fish.x, fish.y)
                 spawnSpecificFish('puffer_thin', fish.x, fish.y);
+            }
+
+            if (fish.type === 'sunfish') {
+                spawnSpecificFish('sunfish-x', fish.x, fish.y);
             }
 
             if (fish.type === 'shark') {
@@ -691,7 +840,6 @@
             if (fish.type === 'jelly') {
                 spawnSpecificFish('jelly-small', fish.x + 120, fish.y);
                 spawnSpecificFish('jelly-small', fish.x - 60, fish.y + 120);
-                // spawnSpecificFish('jelly-small', fish.x + 200, fish.y + 200);
             }
 
             // Remove old fish
