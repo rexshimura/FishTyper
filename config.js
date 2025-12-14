@@ -301,16 +301,42 @@ const fishConfig = [
     {
         type: "skeleton",
         imgSrc: "public/1.png",
-        speed: 0.2,
+        speed: 0.6,
         minDepth: 1500,
         maxDepth: null,
-        spawnWeight: 7,    
+        spawnWeight: 6,    
         lenMin: 14,
         lenMax: 14,
         scale: 5.5,
         scoreBonus: 347,
         effect: null
-    }
+    },
+    {
+        type: "skeleton-2",
+        imgSrc: "public/1-2.png",
+        speed: 0.4,
+        minDepth: 1500,
+        maxDepth: null,
+        spawnWeight: 1,    
+        lenMin: 8,
+        lenMax: 10,
+        scale: 5.5,
+        scoreBonus: 267,
+        effect: null
+    },    
+    {
+        type: "skeleton-3",
+        imgSrc: "public/1-3.png",
+        speed: 0.2,
+        minDepth: 1500,
+        maxDepth: null,
+        spawnWeight: 1,    
+        lenMin: 4,
+        lenMax: 5,
+        scale: 5.5,
+        scoreBonus: 177,
+        effect: null
+    } 
 ];
 
 const gameSettings = {

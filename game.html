@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FishTyper - Game (Dev Mode)</title>
+    <title>FishTyper</title>
     <style>
         body {
             margin: 0;
@@ -837,9 +837,20 @@
                 spawnSpecificFish('shark-damaged', fish.x, fish.y);
             }
 
+            if (fish.type === 'hammer') {
+                spawnSpecificFish('hammer-damaged', fish.x, fish.y);
+            }
+
             if (fish.type === 'jelly') {
                 spawnSpecificFish('jelly-small', fish.x + 120, fish.y);
                 spawnSpecificFish('jelly-small', fish.x - 60, fish.y + 120);
+            }
+
+            if (fish.type === 'skeleton') {
+                spawnSpecificFish('skeleton-2', fish.x, fish.y);
+            }
+            if (fish.type === 'skeleton-2') {
+                spawnSpecificFish('skeleton-3', fish.x, fish.y);
             }
 
             // Remove old fish
