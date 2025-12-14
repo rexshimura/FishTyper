@@ -69,7 +69,7 @@ const fishConfig = [
         imgSrc: "public/7.png",
         speed: 2.2,
         minDepth: 100,
-        maxDepth: 500,      // Stops at 400m
+        maxDepth: 700,      // Stops at 400m
         spawnWeight: 70,    // Common
         lenMin: 2,
         lenMax: 2,
@@ -83,7 +83,7 @@ const fishConfig = [
         speed: 1.0,
         minDepth: 400,
         maxDepth: 800,      // Stops at 400m
-        spawnWeight: 60,    // Common
+        spawnWeight: 50,    // Common
         lenMin: 4,
         lenMax: 4,
         scale: 1.8,
@@ -96,7 +96,7 @@ const fishConfig = [
         speed: 1.3,
         minDepth: 350,
         maxDepth: 850,      // Stops at 400m
-        spawnWeight: 95,    // Common
+        spawnWeight: 60,    // Common
         lenMin: 4,
         lenMax: 5,
         scale: 2.0,
@@ -109,7 +109,7 @@ const fishConfig = [
         speed: 1.5,
         minDepth: 200,
         maxDepth: 600,      
-        spawnWeight: 85,    // Common
+        spawnWeight: 45,    // Common
         lenMin: 5,
         lenMax: 5,
         scale: 2.3,
@@ -122,7 +122,7 @@ const fishConfig = [
         speed: 2.5,
         minDepth: 400,
         maxDepth: 1000,
-        spawnWeight: 50,    // Uncommon
+        spawnWeight: 25,    // Uncommon
         lenMin: 3,
         lenMax: 5,
         scale: 3.0,
@@ -135,7 +135,7 @@ const fishConfig = [
         speed: 0.9,
         minDepth: 100,
         maxDepth: 800,
-        spawnWeight: 10,
+        spawnWeight: 12,
         lenMin: 6,
         lenMax: 7,
         scale: 6,
@@ -143,12 +143,25 @@ const fishConfig = [
         effect: null
     },
     {
+        type: "sunfish-x",
+        imgSrc: "public/12-2.png",
+        speed: 0.3,
+        minDepth: 100,
+        maxDepth: 800,
+        spawnWeight: 1,
+        lenMin: 3,
+        lenMax: 3,
+        scale: 6,
+        scoreBonus: 47,
+        effect: null
+    },
+    {
         type: "marlin",
         imgSrc: "public/13.png",
         speed: 3.2,
         minDepth: 800,
-        maxDepth: null,
-        spawnWeight: 40,
+        maxDepth: 1500,
+        spawnWeight: 18,
         lenMin: 4,
         lenMax: 4,
         scale: 3.2,
@@ -182,6 +195,32 @@ const fishConfig = [
         effect: null
     },
     {
+        type: "hammer",
+        imgSrc: "public/17.png",
+        speed: 1.4,
+        minDepth: 1600,
+        maxDepth: null,
+        spawnWeight: 17,    // Rare dangerous enemy
+        lenMin: 9,
+        lenMax: 10,
+        scale: 5.3,
+        scoreBonus: 88,
+        effect: null
+    },    
+    {
+        type: "hammer-damaged",
+        imgSrc: "public/17-2.png",
+        speed: 1.6,
+        minDepth: 1600,
+        maxDepth: null,
+        spawnWeight: 1,    // Rare dangerous enemy
+        lenMin: 4,
+        lenMax: 6,
+        scale: 5.3,
+        scoreBonus: 64,
+        effect: null
+    },     
+    {
         type: "xray",
         imgSrc: "public/2.png",
         speed: 3.7,
@@ -199,7 +238,7 @@ const fishConfig = [
         imgSrc: "public/2.png",
         speed: 4.5,
         minDepth: 1200,
-        maxDepth: null,
+        maxDepth: 2000,
         spawnWeight: 35,    // Rare dangerous enemy
         lenMin: 1,
         lenMax: 1,
@@ -211,11 +250,11 @@ const fishConfig = [
         type: "whale",
         imgSrc: "public/15.png",
         speed: 0.5,
-        minDepth: 750,
-        maxDepth: 1200,
-        spawnWeight: 25,    // Very Rare Boss
-        lenMin: 10,
-        lenMax: 12,
+        minDepth: 1200,
+        maxDepth: null,
+        spawnWeight: 8,    // Very Rare Boss
+        lenMin: 14,
+        lenMax: 14,
         scale: 8.0,
         scoreBonus: 230,
         effect: null
@@ -252,11 +291,24 @@ const fishConfig = [
         speed: 0.2,
         minDepth: 1200,
         maxDepth: null,
-        spawnWeight: 15,    
-        lenMin: 12,
-        lenMax: 12,
+        spawnWeight: 8,    
+        lenMin: 13,
+        lenMax: 13,
         scale: 5.5,
         scoreBonus: 230,
+        effect: null
+    },
+    {
+        type: "skeleton",
+        imgSrc: "public/1.png",
+        speed: 0.2,
+        minDepth: 1500,
+        maxDepth: null,
+        spawnWeight: 7,    
+        lenMin: 14,
+        lenMax: 14,
+        scale: 5.5,
+        scoreBonus: 347,
         effect: null
     }
 ];
