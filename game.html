@@ -376,6 +376,10 @@
                 <div id="score" style="color: #ffd700;">0</div>
             </div>
             <div class="hud-row">
+                <div class="hud-label">KILLS</div>
+                <div id="kills" style="color: #ff4757;">0</div>
+            </div>
+            <div class="hud-row">
                 <div class="hud-label">DEPTH</div>
                 <div id="depth" style="color: #00bfff;">0m</div>
             </div>
@@ -390,9 +394,7 @@
         </div>
 
         <button id="pause-btn" title="Pause (Tab)">⏸</button>
-
-        <!-- Commented out for Release -->
-        <!-- <div id="dev-container">
+                <div id="dev-container">
             <button id="dev-toggle-btn" onclick="toggleDevMode()">🛠️ Dev Mode</button>
             <div id="dev-menu">
                 <div class="dev-header">DEVELOPER MENU</div>
@@ -400,7 +402,7 @@
                 <div class="dev-spawner-grid" id="spawner-list">
                     </div>
             </div>
-        </div> -->
+        </div>
 
         <div id="typing-area">
             <span id="target-display"><span class="placeholder-text">WAITING FOR TARGET...</span></span>
@@ -416,6 +418,7 @@
     <div id="game-over">
         <h1 style="color: #ff4757; font-size: 4rem;">GAME OVER</h1>
         <h2>Final Score: <span id="final-score">0</span></h2>
+        <h2>Total Kills: <span id="final-kills">0</span></h2>
         <h2>Max Depth: <span id="final-depth">0</span>m</h2>
         <button class="menu-btn" onclick="location.reload()">Try Again</button>
         <button class="menu-btn" onclick="window.location.href='index.html'">Main Menu</button>
@@ -427,6 +430,7 @@
 <script>
         const gameArea = document.getElementById('game-area');
         const scoreEl = document.getElementById('score');
+        const killsEl = document.getElementById('kills');
         const heartsContainer = document.getElementById('hearts-container');
         const depthEl = document.getElementById('depth');
         const typingArea = document.getElementById('typing-area');
@@ -441,6 +445,7 @@
         const spawnerList = document.getElementById('spawner-list');
         
         let score = 0;
+        let killCount = 0;
         let hearts = 3;
         let maxHearts = 3;
         let depth = 0;
@@ -708,6 +713,7 @@
             gameActive = false;
             document.getElementById('final-score').innerText = score;
             document.getElementById('final-depth').innerText = depth;
+            document.getElementById('final-kills').innerText = killCount;
             gameOverScreen.style.display = "flex";
             pauseBtn.style.display = "none";
         }
@@ -802,6 +808,9 @@
             const points = (fish.word.length * gameSettings.pointsPerChar) + fish.scoreBonus;
             score += points;
             scoreEl.innerText = score;
+            
+            killCount++;
+            killsEl.innerText = killCount;
 
             const rect = fish.element.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
