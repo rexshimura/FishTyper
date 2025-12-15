@@ -1163,8 +1163,8 @@
             }
 
             if (fish.type === 'jelly') {
-                spawnSpecificFish('jelly-small', fish.x + 120, fish.y);
-                spawnSpecificFish('jelly-small', fish.x - 60, fish.y + 120);
+                spawnSpecificFish('jelly-small', fish.x + 120, fish.y + 120);
+                spawnSpecificFish('jelly-small', fish.x + 30, fish.y + 100);
             }
 
             if (fish.type === 'skeleton') {
@@ -1172,6 +1172,9 @@
             }
             if (fish.type === 'skeleton-2') {
                 spawnSpecificFish('skeleton-3', fish.x, fish.y);
+            }
+            if (fish.type === 'bone') {
+                spawnSpecificFish('bone-2', fish.x, fish.y);
             }
 
             // Remove old fish
