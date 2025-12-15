@@ -126,21 +126,37 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .zone-title {
-            font-size: 2rem;
+        .zone-header {
             border-bottom: 2px solid #333;
             padding-bottom: 10px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .zone-title {
+            font-size: 2rem;
             color: white;
             text-transform: uppercase;
             text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .zone-depth {
+            font-size: 1.2rem;
+            color: #888;
+            font-family: monospace;
+            font-weight: bold;
         }
         
         /* Gold Zone Title Styling */
         .gold-zone-title {
             color: #ffd700;
-            border-color: #ffd700;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .zone-section.gold-section .zone-header {
+             border-color: #ffd700;
         }
 
         .grid {
@@ -161,7 +177,7 @@
             justify-content: space-between;
             transition: transform 0.2s, background 0.2s;
             position: relative;
-            cursor: pointer; /* Changed to pointer */
+            cursor: pointer;
         }
 
         .fish-card:hover {
@@ -223,7 +239,7 @@
         .is-gold .fish-name { color: #ffd700; text-shadow: 0 0 5px #ff8c00; }
         .is-gold .fish-img { filter: drop-shadow(0 0 5px gold); }
 
-        /* --- MODAL (POPUP) --- */
+        /* --- INFO MODAL (POPUP) --- */
         #fish-modal {
             position: fixed;
             top: 0; left: 0;
@@ -231,7 +247,7 @@
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             z-index: 1000;
-            display: none; /* Hidden by default */
+            display: none; 
             justify-content: center;
             align-items: center;
             opacity: 0;
@@ -243,14 +259,24 @@
             opacity: 1;
         }
 
+        /* Wrapper to hold arrows and modal content */
+        .modal-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            justify-content: center;
+        }
+
         .modal-content {
             background: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 10, 20, 0.98));
             border: 2px solid #00bfff;
             box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
             border-radius: 15px;
             padding: 40px;
+            width: 100%;
             max-width: 500px;
-            width: 90%;
             position: relative;
             text-align: center;
             transform: scale(0.8);
@@ -277,8 +303,41 @@
             cursor: pointer;
             font-weight: bold;
             transition: transform 0.2s;
+            z-index: 10;
         }
         .modal-close:hover { transform: scale(1.2); color: #ff6b6b; }
+        
+        /* Eye Button (Visual Comparison) */
+        .eye-btn {
+            position: absolute;
+            top: 20px; left: 20px;
+            background: transparent;
+            border: 2px solid #00bfff;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background 0.2s;
+            z-index: 10;
+        }
+        
+        .eye-btn:hover { 
+            transform: scale(1.1); 
+            background: rgba(0, 191, 255, 0.2);
+        }
+        
+        .gold-theme .eye-btn { border-color: #ffd700; }
+        .gold-theme .eye-btn:hover { background: rgba(255, 215, 0, 0.2); }
+
+        .eye-icon-img {
+            width: 25px;
+            height: 25px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+        }
 
         .modal-img-box {
             height: 150px;
@@ -295,7 +354,7 @@
             max-width: 100%;
             image-rendering: pixelated;
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
-            transform: scale(1.5); /* Make fish look big in modal */
+            transform: scale(1.5); 
         }
 
         .modal-title {
@@ -321,6 +380,113 @@
         .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
         .stat-value { font-size: 1.2rem; color: white; font-weight: bold; }
 
+        /* Navigation Arrows */
+        .nav-arrow {
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #888;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .nav-arrow:hover {
+            background: white;
+            color: black;
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        /* --- COMPARISON MODAL --- */
+        #compare-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000; /* Higher than info modal */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .compare-box {
+            width: 95%;        /* WIDER */
+            max-width: 1200px; /* WIDER */
+            height: 60vh;
+            border: 4px solid white;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .compare-bg {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            /* Background color set via JS */
+        }
+
+        /* GRID PATTERN OVERLAY */
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .compare-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .compare-fish-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .compare-img {
+            image-rendering: pixelated;
+            filter: drop-shadow(5px 10px 10px rgba(0,0,0,0.6));
+            transition: transform 0.3s;
+        }
+        
+        .compare-label {
+            margin-top: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
     </style>
 </head>
 <body>
@@ -335,42 +501,83 @@
     </header>
 
     <div class="main-container" id="almanac-content">
-    </div>
+        </div>
 
     <div id="fish-modal" onclick="closeModal(event)">
-        <div class="modal-content" id="modal-box">
-            <span class="modal-close" onclick="forceCloseModal()">×</span>
+        <div class="modal-wrapper">
             
-            <div class="modal-img-box">
-                <img src="" id="m-img" class="modal-img" alt="Fish">
+            <div class="nav-arrow" onclick="switchFish(-1)">&#10094;</div>
+
+            <div class="modal-content" id="modal-box">
+                <span class="modal-close" onclick="forceCloseModal()">×</span>
+                
+                <button class="eye-btn" onclick="openComparison()" title="Size Comparison">
+                    <img src="public/icons/eye.png" alt="👁️" class="eye-icon-img">
+                </button>
+                
+                <div class="modal-img-box">
+                    <img src="" id="m-img" class="modal-img" alt="Fish">
+                </div>
+                
+                <h2 id="m-title" class="modal-title">Unknown</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-item" style="grid-column: span 2;">
+                        <span class="stat-label">Habitat Zone</span>
+                        <span id="m-zone" class="stat-value" style="color: #ffd700;">Sunlight Zone</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Depth Range</span>
+                        <span id="m-depth" class="stat-value">0m - 0m</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Size Scale</span>
+                        <span id="m-scale" class="stat-value">1.0x</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Score Value</span>
+                        <span id="m-score" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Swim Speed</span>
+                        <span id="m-speed" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Word Length</span>
+                        <span id="m-len" class="stat-value">3 - 5 chars</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Rarity Weight</span>
+                        <span id="m-rarity" class="stat-value">100</span>
+                    </div>
+                    <div class="stat-item" style="grid-column: span 2;">
+                        <span class="stat-label">Effect</span>
+                        <span id="m-effect" class="stat-value">None</span>
+                    </div>
+                </div>
             </div>
+
+            <div class="nav-arrow" onclick="switchFish(1)">&#10095;</div>
+
+        </div>
+    </div>
+
+    <div id="compare-modal">
+        <div class="compare-box" id="compare-box-inner">
+            <button class="compare-close" onclick="closeComparison()">CLOSE VIEW</button>
             
-            <h2 id="m-title" class="modal-title">Unknown</h2>
-            
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">Depth Range</span>
-                    <span id="m-depth" class="stat-value">0m - 0m</span>
+            <div class="compare-bg" id="compare-bg">
+                <div class="grid-overlay"></div>
+
+                <div class="compare-fish-container">
+                    <img src="public/fishes/3.png" style="width: 90px;" class="compare-img" alt="Guppy">
+                    <div class="compare-label">Guppy (Standard)</div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Score Value</span>
-                    <span id="m-score" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Swim Speed</span>
-                    <span id="m-speed" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Word Length</span>
-                    <span id="m-len" class="stat-value">3 - 5 chars</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Rarity Weight</span>
-                    <span id="m-rarity" class="stat-value">100</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Effect</span>
-                    <span id="m-effect" class="stat-value">None</span>
+
+                <div class="compare-fish-container">
+                    <img src="" id="c-target-img" class="compare-img" alt="Target">
+                    <div class="compare-label" id="c-target-name">Target</div>
                 </div>
             </div>
         </div>
@@ -392,8 +599,33 @@
         const mLen = document.getElementById('m-len');
         const mRarity = document.getElementById('m-rarity');
         const mEffect = document.getElementById('m-effect');
+        const mScale = document.getElementById('m-scale');
+        const mZone = document.getElementById('m-zone'); // New Ref
+
+        // Comparison Elements
+        const compareModal = document.getElementById('compare-modal');
+        const compareBg = document.getElementById('compare-bg');
+        const cTargetImg = document.getElementById('c-target-img');
+        const cTargetName = document.getElementById('c-target-name');
 
         let currentTab = 'normal';
+        
+        // We store the currently rendered list of fish to allow navigation (Next/Prev)
+        let currentFishList = [];
+        let currentFishIndex = -1;
+
+        // --- ZONE METADATA (Ranges) ---
+        const zoneData = {
+            "Sunlight Zone": "0m - 350m",
+            "Gold Rush I (Sunlight)": "350m - 500m",
+            "Twilight Zone": "500m - 1000m",
+            "Gold Rush II (Twilight)": "1000m - 1300m",
+            "Midnight Zone": "1300m - 2400m",
+            "Gold Rush III (Midnight)": "2400m - 2800m",
+            "The Abyss": "2800m - 4800m",
+            "The Trench": "4800m - 5500m",
+            "Mutated Zone": "5500m+"
+        };
 
         function switchTab(tab) {
             currentTab = tab;
@@ -409,20 +641,27 @@
         }
 
         // --- MODAL LOGIC ---
-        function openModal(fishType) {
-            if (typeof fishConfig === 'undefined') return;
-            const fish = fishConfig.find(f => f.type === fishType);
-            if(!fish) return;
+        
+        // Opens modal based on the list index
+        function openModalByIndex(index) {
+            if (index < 0 || index >= currentFishList.length) return;
+            currentFishIndex = index;
+            const fish = currentFishList[index];
 
             // Populate Data
             mImg.src = fish.imgSrc;
             mTitle.innerText = fish.type.replace(/-/g, ' ').replace(/_/g, ' ');
             
+            // Get and set Zone Name
+            const zoneName = getZoneName(fish.minDepth, fish.effect === 'gold');
+            mZone.innerText = zoneName;
+
             mDepth.innerText = `${fish.minDepth}m - ${fish.maxDepth ? fish.maxDepth + 'm' : '???'}`;
             mScore.innerText = fish.scoreBonus + " pts";
             mSpeed.innerText = fish.speed;
             mLen.innerText = `${fish.lenMin} - ${fish.lenMax} chars`;
             mRarity.innerText = fish.spawnWeight > 0 ? fish.spawnWeight : "Special Event";
+            mScale.innerText = fish.scale.toFixed(1) + "x";
             
             // Effect formatting
             if(fish.effect === 'gold') {
@@ -437,14 +676,69 @@
             modal.classList.add('active');
         }
 
-        function closeModal(e) {
-            if(e.target === modal) {
-                modal.classList.remove('active');
+        // Called from Grid Click
+        function openModal(fishType) {
+            // Find index in current list
+            const index = currentFishList.findIndex(f => f.type === fishType);
+            if (index !== -1) {
+                openModalByIndex(index);
             }
+        }
+
+        function switchFish(direction) {
+            let newIndex = currentFishIndex + direction;
+            
+            // Wrap around logic
+            if (newIndex < 0) newIndex = currentFishList.length - 1;
+            if (newIndex >= currentFishList.length) newIndex = 0;
+            
+            openModalByIndex(newIndex);
+        }
+
+        function closeModal(e) {
+            if(e.target === modal) modal.classList.remove('active');
         }
 
         function forceCloseModal() {
             modal.classList.remove('active');
+        }
+
+        // --- COMPARISON LOGIC ---
+
+        function getDepthColor(depth) {
+            if (depth < 350) return "#00bfff";
+            else if (depth < 500) return "#c4c366";
+            else if (depth < 1000) return "#0077be";
+            else if (depth < 1300) return "#6b681d";
+            else if (depth < 2400) return "#003366";
+            else if (depth < 2800) return "#383101";
+            else if (depth < 4800) return "#011d38";
+            else if (depth < 5500) return "#000000";
+            else return "#000022";
+        }
+
+        function openComparison() {
+            const fish = currentFishList[currentFishIndex];
+            if(!fish) return;
+
+            // Set Background Color based on Depth
+            compareBg.style.background = getDepthColor(fish.minDepth);
+
+            // Set Target Info
+            cTargetImg.src = fish.imgSrc;
+            cTargetName.innerText = fish.type.replace(/-/g, ' ').replace(/_/g, ' ');
+
+            // Calculate Visual Size (Base size 100px * scale)
+            // Guppy is scale 0.9 => 90px
+            const baseSize = 100; 
+            const pixelSize = baseSize * fish.scale;
+            cTargetImg.style.width = pixelSize + "px";
+
+            compareModal.style.display = 'flex';
+        }
+
+        function closeComparison() {
+            compareModal.style.display = 'none';
         }
 
         // --- RENDER LOGIC ---
@@ -454,6 +748,7 @@
                 if (minDepth >= 1000) return "Gold Rush II (Twilight)";
                 return "Gold Rush I (Sunlight)";
             } else {
+                if (minDepth >= 5500) return "Mutated Zone";
                 if (minDepth >= 4800) return "The Trench";
                 if (minDepth >= 2800) return "The Abyss";
                 if (minDepth >= 1300) return "Midnight Zone";
@@ -469,6 +764,7 @@
             }
 
             contentDiv.innerHTML = '';
+            currentFishList = []; // Reset navigation list
 
             const filteredFish = fishConfig.filter(f => {
                 const isGold = (f.effect === 'gold');
@@ -481,7 +777,7 @@
                 "Sunlight Zone", "Gold Rush I (Sunlight)",
                 "Twilight Zone", "Gold Rush II (Twilight)",
                 "Midnight Zone", "Gold Rush III (Midnight)",
-                "The Abyss", "The Trench"
+                "The Abyss", "The Trench", "Mutated Zone"
             ];
 
             filteredFish.forEach(fish => {
@@ -496,12 +792,19 @@
                 const fishList = grouped[zoneName];
                 // Sort by depth inside the group
                 fishList.sort((a, b) => a.minDepth - b.minDepth);
+                
+                // Add to master navigation list
+                currentFishList = currentFishList.concat(fishList);
 
                 const section = document.createElement('div');
                 section.className = 'zone-section';
+                if(currentTab === 'golden') section.classList.add('gold-section');
                 
                 const isGoldZone = zoneName.includes("Gold");
                 const titleClass = isGoldZone ? 'zone-title gold-zone-title' : 'zone-title';
+                
+                // Get Depth Range String
+                const depthRange = zoneData[zoneName] || "Unknown Depth";
 
                 let gridHTML = '';
                 fishList.forEach(fish => {
@@ -526,7 +829,10 @@
                 });
 
                 section.innerHTML = `
-                    <div class="${titleClass}">${zoneName}</div>
+                    <div class="zone-header">
+                        <div class="${titleClass}">${zoneName}</div>
+                        <div class="zone-depth">${depthRange}</div>
+                    </div>
                     <div class="grid">${gridHTML}</div>
                 `;
 
