@@ -195,5 +195,26 @@ const wordList = {
         'interchangeability', 'telecommunications', 'contradistinctions', 'histocompatibility', 'disproportionately', 
         'autobiographically', 'constitutionalists', 'counterrevolutions', 'deinstitutionalize', 'disenfranchisement', 
         'electrocardiograms', 'internationalizing', 'misrepresentations', 'anticonstitutional', 'antidiscrimination'
-    ]
+    ],
+    19: [
+        'counterdemonstration', 'institutionalization', 'internationalization',
+        'misinterpretations', 'overcommercialized', 'professionalization',
+        'antifundamentalists', 'interdenominational', 'neuropharmacologist',
+        'pseudohallucination', 'telecommunications', 'uncharacteristically',
+        'anticonstitutional', 'antidiscrimination', 'archaeoastronomers',
+        'autobiographically', 'compartmentalizing', 'contradistinctions',
+        'counterproductively', 'crystallographers', 'histocompatibility',
+        'immunohistochemical'
+    ],
+
+    20: [
+        'electroencephalogram', 'hypercholesterolemia', 'institutionalizing',
+        'internationalization', 'counterrevolutionary', 'deinstitutionalization',
+        'misrepresentations', 'overintellectualize', 'psychoneuroimmunology',
+        'uncharacteristically',
+        'anticonstitutionally', 'counterdemonstrations', 'electrocardiographic',
+        'electrophysiological', 'gastroenterological', 'immunoelectrophoresis',
+        'interchangeabilities', 'magnetohydrodynamics', 'neuroendocrinological',
+        'oversimplifications'
+] 
 };
