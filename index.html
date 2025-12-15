@@ -27,6 +27,15 @@
             animation: float 3s ease-in-out infinite;
         }
 
+        /* CHANGED: Flex row to put buttons side-by-side */
+        .btn-container {
+            display: flex;
+            flex-direction: row; 
+            gap: 20px;
+            align-items: center;
+            z-index: 10;
+        }
+
         .play-btn {
             background-color: #ff6b6b;
             border: 4px solid white;
@@ -39,11 +48,46 @@
             transition: transform 0.2s, background 0.2s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             text-decoration: none;
+            text-align: center;
+            min-width: 150px;
+            height: 60px; /* Fixed height for alignment */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .play-btn:hover {
             transform: scale(1.1);
             background-color: #ff4757;
+        }
+
+        /* CHANGED: Circular Button Style */
+        .almanac-btn {
+            width: 90px;
+            height: 90px;
+            background-color: #f1c40f; 
+            border: 4px solid white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-decoration: none;
+        }
+
+        .almanac-btn:hover {
+            transform: scale(1.1) rotate(-10deg); /* Added slight rotation on hover for fun */
+            background-color: #f39c12;
+        }
+
+        .almanac-icon {
+            width: 50px; 
+            height: 50px;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.2));
         }
 
         @keyframes float {
@@ -59,6 +103,7 @@
             border-radius: 50%;
             bottom: -50px;
             animation: rise 10s infinite ease-in;
+            z-index: 1;
         }
 
         @keyframes rise {
@@ -66,13 +111,99 @@
             50% { transform: translateX(100px); }
             100% { bottom: 110vh; transform: translateX(-50px); }
         }
+
+        /* --- CREDITS BUTTON & MODAL --- */
+        .credits-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 3px solid white;
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .credits-btn:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: scale(1.1);
+        }
+
+        #credits-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #003366;
+            border: 4px solid white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .close-modal-btn:hover {
+            background: #ff6b6b;
+        }
+
     </style>
 </head>
 <body>
 
     <h1>FishTyper</h1>
-    <a href="game.html" class="play-btn">PLAY</a>
-    <h4>V1.6.4</h4>
+    
+    <div class="btn-container">
+        <a href="game.html" class="play-btn">PLAY</a>
+        
+        <a href="almanac.html" class="almanac-btn" title="Almanac">
+            <img src="public/icons/open-book.png" alt="Book" class="almanac-icon">
+        </a>
+    </div>
+    
+    <h4 style="margin-top: 20px;">V1.6.4</h4>
+
+    <div class="credits-btn" onclick="document.getElementById('credits-modal').style.display = 'flex'">?</div>
+
+    <div id="credits-modal">
+        <div class="modal-content">
+            <h2 style="color: #ffd700; text-transform: uppercase; margin-bottom: 20px;">Credits</h2>
+            <p style="font-size: 1.5rem;">Made by Rexshimura 2025</p>
+            <button class="close-modal-btn" onclick="document.getElementById('credits-modal').style.display = 'none'">CLOSE</button>
+        </div>
+    </div>
 
     <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-duration: 8s;"></div>
     <div class="bubble" style="width: 20px; height: 20px; left: 30%; animation-duration: 12s;"></div>
