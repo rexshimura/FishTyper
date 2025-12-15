@@ -175,8 +175,8 @@ const fishConfig = [
     },
     {
         type: "jelly-small",    imgSrc: "public/18.png",
-        speed: 1.5,             scale: 0.8,             scoreBonus: 20,
-        minDepth: 3300,         maxDepth: 4800,         spawnWeight: 0,
+        speed: 1.5,             scale: 0.8,             scoreBonus: 15,
+        minDepth: 2815,         maxDepth: 4800,         spawnWeight: 50,
         lenMin: 1,              lenMax: 1,              effect: null
     },
     {
@@ -193,10 +193,39 @@ const fishConfig = [
     },
     {
         type: "xray",           imgSrc: "public/2.png",
-        speed: 3.7,             scale: 1.5,             scoreBonus: 25,
-        minDepth: 2815,         maxDepth: 4000,         spawnWeight: 40,
+        speed: 3,               scale: 1.5,             scoreBonus: 25,
+        minDepth: 2815,         maxDepth: 4000,         spawnWeight: 50,
         lenMin: 1,              lenMax: 2,              effect: null
     },
+
+// ==================================================
+// THE TRENCH | DEPTH ( 4800 - ???? )
+// ==================================================
+    {
+        type: "sardine",           imgSrc: "public/21.png",
+        speed: 2,               scale: 0.9,             scoreBonus: 25,
+        minDepth: 2815,         maxDepth: 4000,         spawnWeight: 50,
+        lenMin: 1,              lenMax: 2,              effect: null
+    },
+    {
+        type: "skeleton",       imgSrc: "public/1.png",
+        speed: 0.4,             scale: 5.5,             scoreBonus: 347,
+        minDepth: 4800,         maxDepth: null,         spawnWeight: 6,
+        lenMin: 13,             lenMax: 13,             effect: null
+    },
+    {
+        type: "skeleton-2",     imgSrc: "public/1-2.png",
+        speed: 0.3,             scale: 5.5,             scoreBonus: 267,
+        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        lenMin: 10,             lenMax: 12,             effect: null
+    },
+    {
+        type: "skeleton-3",     imgSrc: "public/1-3.png",
+        speed: 0.1,             scale: 5.5,             scoreBonus: 332,
+        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        lenMin: 4,              lenMax: 6,              effect: null
+    }
+
  ];
 
 const gameSettings = {
