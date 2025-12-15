@@ -19,13 +19,13 @@ const fishConfig = [
 // PART 2 1000 - 1300
 
     {
-        type: "gold_salmon",         imgSrc: "public/fishes/9-g.png",
+        type: "gold_salmon",    imgSrc: "public/fishes/9-g.png",
         speed: 2.0,             scale: 2.0,             scoreBonus: 160,
         minDepth: 1000,         maxDepth: 1300,         spawnWeight: 100,
         lenMin: 4,              lenMax: 4,              effect: "gold"
     },    
     {
-        type: "gold_barracuda",      imgSrc: "public/fishes/10-g.png",
+        type: "gold_barracuda", imgSrc: "public/fishes/10-g.png",
         speed: 2.5,             scale: 2.3,             scoreBonus: 200,
         minDepth: 1000,         maxDepth: 1300,         spawnWeight: 80,
         lenMin: 5,              lenMax: 5,              effect: "gold"
@@ -34,16 +34,16 @@ const fishConfig = [
 // PART 3 2400 - 2800
 
     {
-        type: "gold_angel",          imgSrc: "public/fishes/23-g.png",
-        speed: 1.5,             scale: 2.0,             scoreBonus: 230,
+        type: "gold_angel",     imgSrc: "public/fishes/23-g.png",
+        speed: 3,               scale: 2.0,             scoreBonus: 230,
         minDepth: 2400,         maxDepth: 2800,         spawnWeight: 100,
-        lenMin: 1,              lenMax: 1,              effect: "gold"
+        lenMin: 4,              lenMax: 4,              effect: "gold"
     },    
     {
         type: "gold_marlin",         imgSrc: "public/fishes/13-g.png",
-        speed: 2.0,             scale: 3.2,             scoreBonus: 290,
+        speed: 2.2,             scale: 3.2,             scoreBonus: 290,
         minDepth: 2400,         maxDepth: 2800,         spawnWeight: 80,
-        lenMin: 2,              lenMax: 4,              effect: "gold"
+        lenMin: 6,              lenMax: 7,              effect: "gold"
     },   
 
 // ==================================================
@@ -175,15 +175,15 @@ const fishConfig = [
     },   
     {
         type: "jelly",          imgSrc: "public/fishes/18.png",
-        speed: 0.4,             scale: 4.0,             scoreBonus: 38,
+        speed: 0.4,             scale: 4.5,             scoreBonus: 38,
         minDepth: 3300,         maxDepth: 4800,         spawnWeight: 20,
-        lenMin: 6,              lenMax: 7,              effect: null
+        lenMin: 8,              lenMax: 9,              effect: null
     },
     {
-        type: "jelly-small",    imgSrc: "public/fishes/18.png",
-        speed: 1.0,             scale: 0.8,             scoreBonus: 15,
+        type: "jelly-small",    imgSrc: "public/fishes/18-s.png",
+        speed: 0.3,             scale: 1.8,             scoreBonus: 15,
         minDepth: 2815,         maxDepth: 4800,         spawnWeight: 50,
-        lenMin: 1,              lenMax: 1,              effect: null
+        lenMin: 4,              lenMax: 5,              effect: null
     },
     {
         type: "angler",         imgSrc: "public/fishes/20.png",
@@ -223,7 +223,19 @@ const fishConfig = [
         type: "skeleton-3",     imgSrc: "public/fishes/1-3.png",
         speed: 0.1,             scale: 5.5,             scoreBonus: 332,
         minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
-        lenMin: 12,             lenMax: 14,              effect: null
+        lenMin: 12,             lenMax: 14,             effect: null
+    },
+    {
+        type: "bone",           imgSrc: "public/fishes/24.png",
+        speed: 3,               scale: 10,              scoreBonus: 332,
+        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        lenMin: 1,              lenMax: 1,              effect: null
+    },
+  {
+        type: "bone-2",         imgSrc: "public/fishes/24-2.png",
+        speed: 0.2,             scale: 10,               scoreBonus: 400,
+        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        lenMin: 14,             lenMax: 14,             effect: null
     }
 
  ];
