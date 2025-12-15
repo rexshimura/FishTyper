@@ -52,27 +52,21 @@
             100% { transform: translateY(-50px) rotate(5deg); }
         }
 
-        /* --- ZONE DISPLAY (UPGRADED VISUALS) --- */
+        /* --- ZONE DISPLAY (SEAMLESS & TRANSPARENT) --- */
         #zone-display {
             position: absolute;
-            top: 15%; 
+            top: 10%; /* Slightly higher to be out of the way */
             left: 50%; 
             transform: translateX(-50%); 
             
-            /* Glassmorphism & Shape */
-            padding: 20px 60px;
-            background: rgba(0, 15, 30, 0.75); /* Dark blue glass */
-            backdrop-filter: blur(8px); /* Blur effect behind */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom: 4px solid #00bfff; /* Cyan Neon Line */
-            border-radius: 15px; /* Softer corners */
+            /* Transparent Background for visibility */
+            padding: 10px 40px;
+            background: transparent; 
             
-            /* Glow Effects */
-            box-shadow: 
-                0 10px 30px rgba(0,0,0,0.6), /* Deep shadow */
-                0 0 20px rgba(0, 191, 255, 0.3); /* Cyan Glow */
-
-            color: white;
+            /* Subtle bottom line only */
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3); 
+            
+            /* No box shadow, just text shadow below */
             z-index: 15;
             pointer-events: none;
             opacity: 0; 
@@ -81,44 +75,39 @@
         }
 
         .zone-anim {
-            animation: slideFade 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: slideFade 4s ease-in-out forwards;
         }
 
         @keyframes slideFade {
             0% { 
-                transform: translate(-50%, -40px) scale(0.9); 
+                transform: translate(-50%, -20px); 
                 opacity: 0; 
-                filter: blur(5px);
             }
             15% { 
-                transform: translate(-50%, 0) scale(1); 
+                transform: translate(-50%, 0); 
                 opacity: 1; 
-                filter: blur(0px);
             }
             85% { 
-                transform: translate(-50%, 0) scale(1); 
+                transform: translate(-50%, 0); 
                 opacity: 1; 
-                filter: blur(0px);
             }
             100% { 
-                transform: translate(-50%, -20px) scale(0.95); 
+                transform: translate(-50%, -10px); 
                 opacity: 0; 
-                filter: blur(2px);
             }
         }
 
         .zone-title {
-            font-family: 'Courier New', monospace;
-            font-size: 3rem;
+            font-size: 3.5rem; /* Larger text */
             font-weight: 900;
-            letter-spacing: 8px; /* Cinematic spacing */
+            letter-spacing: 5px;
             text-transform: uppercase;
-            color: #fff;
+            color: rgba(255, 255, 255, 0.9);
             
-            /* Text Glow */
+            /* Heavy Text Shadow for readability without background */
             text-shadow: 
                 0 0 10px rgba(0, 191, 255, 0.8),
-                0 0 20px rgba(0, 191, 255, 0.4);
+                2px 2px 4px rgba(0, 0, 0, 0.8);
                 
             display: block;
             white-space: nowrap;
@@ -127,31 +116,24 @@
         .zone-sub {
             font-size: 0.9rem;
             font-weight: bold;
-            color: #00bfff; /* Cyan Text */
-            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 3px;
             text-transform: uppercase;
             display: block;
-            margin-bottom: 8px;
-            text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px black;
         }
 
-        /* Special styling for Gold Rush */
+        /* Gold Zone Variant */
         .gold-zone {
-            border-bottom-color: #ffd700 !important;
-            box-shadow: 
-                0 10px 30px rgba(0,0,0,0.6), 
-                0 0 25px rgba(255, 215, 0, 0.4) !important; /* Gold Glow */
+            border-bottom-color: rgba(255, 215, 0, 0.5) !important;
         }
         
         .gold-zone .zone-title {
             color: #ffd700;
             text-shadow: 
                 0 0 15px rgba(255, 215, 0, 0.8), 
-                0 0 30px #ff8c00; /* Orange/Gold Text Glow */
-        }
-
-        .gold-zone .zone-sub {
-            color: #ffea00;
+                2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* --- HUD LAYOUT --- */
@@ -210,7 +192,18 @@
             backdrop-filter: blur(4px);
             pointer-events: none;
             box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
-            transition: opacity 0.5s;
+            
+            /* For smooth toggling */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hidden State for Toggle */
+        .hud-hidden {
+            opacity: 0 !important;
+            transform: translateY(20px) !important;
+            pointer-events: none;
         }
 
         .scanner-header {
@@ -562,7 +555,8 @@
         </div>
 
         <button id="pause-btn" title="Pause (Tab)">⏸</button>
-                <div id="typing-area">
+        
+        <div id="typing-area">
             <span id="target-display"><span class="placeholder-text">WAITING FOR TARGET...</span></span>
         </div>
         
@@ -591,6 +585,7 @@
         const killsEl = document.getElementById('kills');
         const heartsContainer = document.getElementById('hearts-container');
         const depthEl = document.getElementById('depth');
+        const scannerContainer = document.getElementById('scanner-container'); // Need container for toggle
         const scannerListEl = document.getElementById('scanner-list');
         const typingArea = document.getElementById('typing-area');
         const targetDisplay = document.getElementById('target-display');
@@ -638,7 +633,7 @@
                 
                 updateEnvironment();
                 updateScanner(); 
-                updateZoneDisplay(); // <--- UPDATE ZONE DISPLAY
+                updateZoneDisplay(); 
             }
 
             if (timestamp - lastSpawn > spawnRate) {
@@ -665,9 +660,15 @@
         pauseBtn.addEventListener('click', () => { togglePause(); pauseBtn.blur(); });
 
         window.addEventListener('keydown', (e) => {
+            // PAUSE
             if (e.key === "Escape" || e.key === "Tab") {
                 e.preventDefault();
                 togglePause();
+            }
+
+            // SCANNER TOGGLE (1)
+            if (e.key === "1") {
+                scannerContainer.classList.toggle('hud-hidden');
             }
         });
 
