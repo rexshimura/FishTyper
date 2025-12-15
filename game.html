@@ -52,6 +52,108 @@
             100% { transform: translateY(-50px) rotate(5deg); }
         }
 
+        /* --- ZONE DISPLAY (UPGRADED VISUALS) --- */
+        #zone-display {
+            position: absolute;
+            top: 15%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            
+            /* Glassmorphism & Shape */
+            padding: 20px 60px;
+            background: rgba(0, 15, 30, 0.75); /* Dark blue glass */
+            backdrop-filter: blur(8px); /* Blur effect behind */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 4px solid #00bfff; /* Cyan Neon Line */
+            border-radius: 15px; /* Softer corners */
+            
+            /* Glow Effects */
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.6), /* Deep shadow */
+                0 0 20px rgba(0, 191, 255, 0.3); /* Cyan Glow */
+
+            color: white;
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0; 
+            text-align: center;
+            transition: opacity 0.5s;
+        }
+
+        .zone-anim {
+            animation: slideFade 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes slideFade {
+            0% { 
+                transform: translate(-50%, -40px) scale(0.9); 
+                opacity: 0; 
+                filter: blur(5px);
+            }
+            15% { 
+                transform: translate(-50%, 0) scale(1); 
+                opacity: 1; 
+                filter: blur(0px);
+            }
+            85% { 
+                transform: translate(-50%, 0) scale(1); 
+                opacity: 1; 
+                filter: blur(0px);
+            }
+            100% { 
+                transform: translate(-50%, -20px) scale(0.95); 
+                opacity: 0; 
+                filter: blur(2px);
+            }
+        }
+
+        .zone-title {
+            font-family: 'Courier New', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 8px; /* Cinematic spacing */
+            text-transform: uppercase;
+            color: #fff;
+            
+            /* Text Glow */
+            text-shadow: 
+                0 0 10px rgba(0, 191, 255, 0.8),
+                0 0 20px rgba(0, 191, 255, 0.4);
+                
+            display: block;
+            white-space: nowrap;
+        }
+
+        .zone-sub {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #00bfff; /* Cyan Text */
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+        }
+
+        /* Special styling for Gold Rush */
+        .gold-zone {
+            border-bottom-color: #ffd700 !important;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.6), 
+                0 0 25px rgba(255, 215, 0, 0.4) !important; /* Gold Glow */
+        }
+        
+        .gold-zone .zone-title {
+            color: #ffd700;
+            text-shadow: 
+                0 0 15px rgba(255, 215, 0, 0.8), 
+                0 0 30px #ff8c00; /* Orange/Gold Text Glow */
+        }
+
+        .gold-zone .zone-sub {
+            color: #ffea00;
+        }
+
         /* --- HUD LAYOUT --- */
         #hud-container {
             position: absolute;
@@ -425,6 +527,11 @@
         <div class="water-overlay"></div>
         <div class="caustics"></div>
 
+        <div id="zone-display">
+            <span class="zone-sub">CURRENT REGION</span>
+            <span id="zone-name" class="zone-title">SUNLIGHT ZONE</span>
+        </div>
+
         <div id="hud-container">
             <div class="hud-row">
                 <div class="hud-label">SCORE</div>
@@ -451,22 +558,11 @@
         <div id="scanner-container">
             <div class="scanner-header">SONAR: DETECTED</div>
             <div id="scanner-list">
-                </div>
+            </div>
         </div>
 
         <button id="pause-btn" title="Pause (Tab)">⏸</button>
-
-        <!-- <div id="dev-container">
-            <button id="dev-toggle-btn" onclick="toggleDevMode()">🛠️ Dev Mode</button>
-            <div id="dev-menu">
-                <div class="dev-header">DEVELOPER MENU</div>
-                <div class="dev-active-indicator">Invincibility: <b>ON</b></div>
-                <div class="dev-spawner-grid" id="spawner-list">
-                </div>
-            </div>
-        </div> -->
-
-        <div id="typing-area">
+                <div id="typing-area">
             <span id="target-display"><span class="placeholder-text">WAITING FOR TARGET...</span></span>
         </div>
         
@@ -524,6 +620,9 @@
         let pauseStartTime = 0;
         let isDevMode = false;
         let currentScannerSignature = "";
+        
+        // --- NEW ZONE VARIABLE ---
+        let currentZoneName = "";
 
         function loop(timestamp) {
             if (!gameActive) return;
@@ -533,17 +632,20 @@
             }
 
             if (timestamp - depthTimer > 1000) {
-                depth += gameSettings.depthIncreaseRate; 
+                depth += (typeof gameSettings !== 'undefined' ? gameSettings.depthIncreaseRate : 5); 
                 depthEl.innerText = depth + "m";
                 depthTimer = timestamp;
+                
                 updateEnvironment();
-                updateScanner(); // Update the sonar list
+                updateScanner(); 
+                updateZoneDisplay(); // <--- UPDATE ZONE DISPLAY
             }
 
             if (timestamp - lastSpawn > spawnRate) {
                 spawnFish();
                 lastSpawn = timestamp;
-                if (spawnRate > gameSettings.minSpawnRate) spawnRate -= 10;
+                const minRate = typeof gameSettings !== 'undefined' ? gameSettings.minSpawnRate : 800;
+                if (spawnRate > minRate) spawnRate -= 10;
             }
 
             activeFishes.forEach((fish, index) => {
@@ -569,6 +671,54 @@
             }
         });
 
+        // --- ZONE DISPLAY FUNCTION ---
+        function updateZoneDisplay() {
+            let newZone = "";
+            let isGold = false;
+
+            // Logic based on your specific ranges
+            if (depth < 350) {
+                newZone = "SUNLIGHT ZONE";
+            } else if (depth < 500) {
+                newZone = "GOLD RUSH";
+                isGold = true;
+            } else if (depth < 1000) {
+                newZone = "TWILIGHT ZONE";
+            } else if (depth < 1300) {
+                newZone = "GOLD RUSH";
+                isGold = true;
+            } else if (depth < 2400) {
+                newZone = "MIDNIGHT ZONE";
+            } else if (depth < 2800) {
+                newZone = "GOLD RUSH";
+                isGold = true;
+            } else if (depth < 4800) {
+                newZone = "THE ABYSS";
+            } else {
+                newZone = "THE TRENCH";
+            }
+
+            if (newZone !== currentZoneName) {
+                currentZoneName = newZone;
+                
+                const zoneDisplay = document.getElementById('zone-display');
+                const zoneNameText = document.getElementById('zone-name');
+
+                zoneNameText.innerText = newZone;
+
+                if (isGold) {
+                    zoneDisplay.classList.add('gold-zone');
+                } else {
+                    zoneDisplay.classList.remove('gold-zone');
+                }
+
+                // Trigger Animation
+                zoneDisplay.classList.remove('zone-anim');
+                void zoneDisplay.offsetWidth; // Trigger reflow
+                zoneDisplay.classList.add('zone-anim');
+            }
+        }
+
         // --- SCANNER FUNCTION ---
         function updateScanner() {
             if (typeof fishConfig === 'undefined') return;
@@ -577,12 +727,10 @@
             const availableFish = fishConfig.filter(f => {
                 const isDeepEnough = depth >= f.minDepth;
                 const isNotTooDeep = f.maxDepth === null || depth <= f.maxDepth;
-                // Exclude hidden technical spawns if they have no weight or explicit 0
                 const hasWeight = (f.spawnWeight !== undefined && f.spawnWeight > 0) || f.spawnWeight === undefined; 
                 return isDeepEnough && isNotTooDeep && hasWeight;
             });
 
-            // Create a signature to check if list changed (avoids flickering)
             const signature = availableFish.map(f => f.type).join(',');
 
             if (signature !== currentScannerSignature) {
