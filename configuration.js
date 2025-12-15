@@ -181,7 +181,7 @@ const fishConfig = [
     },
     {
         type: "jelly-small",    imgSrc: "public/fishes/18-s.png",
-        speed: 0.3,             scale: 1.8,             scoreBonus: 15,
+        speed: 0.6,             scale: 1.8,             scoreBonus: 15,
         minDepth: 2815,         maxDepth: 4800,         spawnWeight: 50,
         lenMin: 4,              lenMax: 5,              effect: null
     },
@@ -203,40 +203,104 @@ const fishConfig = [
         minDepth: 2815,         maxDepth: 4000,         spawnWeight: 50,
         lenMin: 1,              lenMax: 2,              effect: null
     },
+    {
+        type: "piranha",        imgSrc: "public/fishes/7.png",
+        speed: 1.6,             scale: 3,               scoreBonus: 33,
+        minDepth: 3000,         maxDepth: 4800,         spawnWeight: 20,
+        lenMin: 5,              lenMax: 7,              effect: null
+    },
+    {
+        type: "bullfish",       imgSrc: "public/fishes/25.png",
+        speed: 0.5,             scale: 2.6,             scoreBonus: 23,
+        minDepth: 3000,         maxDepth: 4800,         spawnWeight: 20,
+        lenMin: 4,              lenMax: 4,              effect: null
+    },
+    {
+        type: "bullfish-angry", imgSrc: "public/fishes/25-2.png",
+        speed: 1.6,             scale: 2.6,             scoreBonus: 23,
+        minDepth: 3000,         maxDepth: 3001,         spawnWeight: 0,
+        lenMin: 8,              lenMax: 8,              effect: null
+    },
 
 // ==================================================
-// THE TRENCH | DEPTH ( 4800 - ???? )
+// THE TRENCH | DEPTH ( 4800 - 5500 )
 // ==================================================
     {
         type: "skeleton",       imgSrc: "public/fishes/1.png",
         speed: 0.4,             scale: 5.5,             scoreBonus: 347,
-        minDepth: 4800,         maxDepth: null,         spawnWeight: 6,
+        minDepth: 4800,         maxDepth: 5500,         spawnWeight: 100,
         lenMin: 17,             lenMax: 13,             effect: null
     },
     {
         type: "skeleton-2",     imgSrc: "public/fishes/1-2.png",
         speed: 0.3,             scale: 5.5,             scoreBonus: 267,
-        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        minDepth: 4800,         maxDepth: 4801,         spawnWeight: 0,
         lenMin: 16,             lenMax: 12,             effect: null
     },
     {
         type: "skeleton-3",     imgSrc: "public/fishes/1-3.png",
         speed: 0.1,             scale: 5.5,             scoreBonus: 332,
-        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
+        minDepth: 4800,         maxDepth: 4801,         spawnWeight: 0,
         lenMin: 12,             lenMax: 14,             effect: null
     },
+    // {
+    //     type: "thing",          imgSrc: "public/fishes/24.png",
+    //     speed: 0.3,             scale: 12,              scoreBonus: 332,
+    //     minDepth: 4800,         maxDepth: 5500,         spawnWeight: 1,
+    //     lenMin: 18,             lenMax: 18,             effect: null
+    // },
     {
         type: "bone",           imgSrc: "public/fishes/24.png",
-        speed: 3,               scale: 10,              scoreBonus: 332,
-        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
-        lenMin: 1,              lenMax: 1,              effect: null
+        speed: 0.3,             scale: 12,              scoreBonus: 332,
+        minDepth: 4800,         maxDepth: 4900,         spawnWeight: 90,
+        lenMin: 18,             lenMax: 18,             effect: null
     },
-  {
+    {
         type: "bone-2",         imgSrc: "public/fishes/24-2.png",
-        speed: 0.2,             scale: 10,               scoreBonus: 400,
-        minDepth: 4800,         maxDepth: null,         spawnWeight: 1,
-        lenMin: 14,             lenMax: 14,             effect: null
-    }
+        speed: 0.1,             scale: 12,              scoreBonus: 400,
+        minDepth: 4800,         maxDepth: 4801,         spawnWeight: 0,
+        lenMin: 18,             lenMax: 18,             effect: null
+    },
+
+// ==================================================
+// THE MUTATED ZONE | DEPTH ( 5500 - ???? )
+// ==================================================    
+    {
+        type: "crypoz",        imgSrc: "public/fishes/26.png",
+        speed: 2.5,            scale: 3.0,             scoreBonus: 380,
+        minDepth: 5500,        maxDepth: null,         spawnWeight: 100,
+        lenMin: 6,             lenMax: 7,              effect: null
+    },
+    {
+        type: "tripoz",        imgSrc: "public/fishes/28.png",
+        speed: 0.3,            scale: 12.0,            scoreBonus: 780,
+        minDepth: 5500,        maxDepth: null,         spawnWeight: 3,
+        lenMin: 18,            lenMax: 18,             effect: null
+    },
+    {
+        type: "tripoz-2",      imgSrc: "public/fishes/28-2.png",
+        speed: 0.7,            scale: 12.0,            scoreBonus: 1244,
+        minDepth: 5500,        maxDepth: 5501,         spawnWeight: 0,
+        lenMin: 19,            lenMax: 19,             effect: null
+    },    
+    {
+        type: "tripoz-3",        imgSrc: "public/fishes/28-3.png",
+        speed: 0.2,            scale: 12.0,            scoreBonus: 2572,
+        minDepth: 5500,        maxDepth: 5501,         spawnWeight: 0,
+        lenMin: 20,            lenMax: 20,             effect: null
+    },     
+    {
+        type: "cytoz",        imgSrc: "public/fishes/27.png",
+        speed: 0.9,            scale: 8.0,             scoreBonus: 888,
+        minDepth: 5500,        maxDepth: null,         spawnWeight: 30,
+        lenMin: 16,            lenMax: 17,             effect: null
+    },    
+    {
+        type: "krotoz",        imgSrc: "public/fishes/29.png",
+        speed: 1.3,            scale: 5.0,            scoreBonus: 760,
+        minDepth: 5500,        maxDepth: null,         spawnWeight: 70,
+        lenMin: 11,            lenMax: 13,             effect: null
+    },      
 
  ];
 
