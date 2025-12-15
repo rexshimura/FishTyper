@@ -625,8 +625,8 @@
         
         let score = 0;
         let killCount = 0;
-        let hearts = 3;
-        let maxHearts = 3;
+        let hearts = 5;
+        let maxHearts = 5;
         let depth = 0;
         let gameActive = true;
         let activeFishes = [];
@@ -1007,9 +1007,9 @@
             let html = '';
             for(let i=0; i<maxHearts; i++) {
                 if (i < hearts) {
-                    html += `<img src="/public/icons/heart.png" class="heart-img" alt="HP">`;
+                    html += `<img src="public/icons/heart.png" class="heart-img" alt="HP">`;
                 } else {
-                    html += `<img src="/public/icons/empty_heart.png" class="heart-img" alt="-">`;
+                    html += `<img src="public/icons/empty_heart.png" class="heart-img" alt="-">`;
                 }
             }
             heartsContainer.innerHTML = html;
