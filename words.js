@@ -163,5 +163,37 @@ const wordList = {
         'responsibility', 'revolutionary', 'satisfaction', 'scholarship', 'specialization', 'specification',
         'standardization', 'superintendent', 'telecommunication', 'transportation', 'understanding', 'unprecedented',
         'vulnerability', 'weatherproofing', 'wellwishing'
+    ],
+    15: [
+        'acclimatization', 'bouillabaisse', 'cannibalization', 'choreographers', 'correspondence', 
+        'disappointment', 'excommunication', 'exemplification', 'existentialism', 'hallucinations', 
+        'inaccessibility', 'inconsiderable', 'indiscriminate', 'interconnected', 'irresponsibility',
+        'acknowledgement', 'administrations', 'rationalization', 'standardization', 'transformations', 
+        'personification', 'intensification', 'disorganization', 'confidentiality', 'competitiveness', 
+        'autobiographies', 'accomplishments', 'acknowledgments', 'bacteriological', 'crystallization'
+    ],
+    16: [
+        'bioavailability', 'characterization', 'contraindication', 'decentralization', 'disqualification', 
+        'extinguishment', 'incomprehensible', 'indistinguishable', 'interdisciplinary', 'microelectronics', 
+        'misinterpretation', 'mispronunciation', 'neurotransmitter', 'paralinguistics', 'responsibilities',
+        'journalistically', 'knowledgeability', 'methodologically', 'multiculturalism', 'subconsciousness', 
+        'transcontinental', 'compartmentalize', 'counteroffensive', 'autobiographical', 'circumstantially', 
+        'consequentialism', 'conservationists', 'constructionists', 'counterarguments', 'counterespionage'
+    ],
+    17: [
+        'compartmentalized', 'conceptualization', 'counterargument', 'counterterrorism', 'electrocardiogram', 
+        'environmentalists', 'hydroelectricity', 'industrialization', 'interdepartmental', 'intergovernmental', 
+        'misrepresentation', 'misunderstanding', 'telecommunication', 'underappreciated', 'unprofessionalism',
+        'multidisciplinary', 'intercommunicated', 'bureaucratization', 'comprehensibility', 'decriminalization', 
+        'denationalization', 'deterministically', 'inappropriateness', 'incompatibilities', 'indestructibility', 
+        'interrelationship', 'maladministration', 'nondiscriminatory', 'commercialisation', 'conceptualisation'
+    ],
+    18: [
+        'characteristically', 'commercialization', 'constitutionalism', 'constructivism', 'conversationalists', 
+        'counterproductive', 'cryptozoologists', 'electrocardiograph', 'immunofluorescence', 'institutionalizing', 
+        'multidimensional', 'neuropsychological', 'oversimplification', 'photoluminescence', 'sentimentalization',
+        'interchangeability', 'telecommunications', 'contradistinctions', 'histocompatibility', 'disproportionately', 
+        'autobiographically', 'constitutionalists', 'counterrevolutions', 'deinstitutionalize', 'disenfranchisement', 
+        'electrocardiograms', 'internationalizing', 'misrepresentations', 'anticonstitutional', 'antidiscrimination'
     ]
 };
