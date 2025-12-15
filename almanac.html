@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>( ✦ ) FishTyper - Almanac</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000c17;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 3px solid #00bfff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 0 #003366;
+            letter-spacing: 5px;
+        }
+
+        .back-btn {
+            background-color: #ff4757;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            border: 2px solid white;
+            position: absolute;
+            left: 20px;
+            top: 30px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            background-color: #ff6b6b;
+        }
+
+        /* --- TABS --- */
+        .tabs-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid #00bfff;
+            color: #00bfff;
+            padding: 10px 30px;
+            font-size: 1.2rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 191, 255, 0.1);
+        }
+
+        .tab-btn.active {
+            background: #00bfff;
+            color: #000c17;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
+        }
+
+        /* Golden Tab Specifics */
+        .tab-btn.gold-tab {
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        
+        .tab-btn.gold-tab:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .tab-btn.gold-tab.active {
+            background: #ffd700;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        /* --- CONTENT AREA --- */
+        .main-container {
+            max-width: 1200px;
+            width: 90%;
+            padding: 20px 0 60px 0;
+        }
+
+        .zone-section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .zone-title {
+            font-size: 2rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: white;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+        
+        /* Gold Zone Title Styling */
+        .gold-zone-title {
+            color: #ffd700;
+            border-color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- FISH CARD --- */
+        .fish-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 191, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s, background 0.2s;
+            position: relative;
+        }
+
+        .fish-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            border-color: #00bfff;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+        }
+
+        .fish-img-container {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .fish-img {
+            max-width: 100%;
+            max-height: 100%;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+        }
+
+        .fish-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: capitalize;
+            color: #00bfff;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .fish-details {
+            font-size: 0.8rem;
+            color: #ccc;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .depth-badge {
+            background: #003366;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* Gold Card Variant */
+        .is-gold {
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+        .is-gold:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+        .is-gold .fish-name { color: #ffd700; text-shadow: 0 0 5px #ff8c00; }
+        .is-gold .fish-img { filter: drop-shadow(0 0 5px gold); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">← MENU</a>
+        <h1>ALMANAC</h1>
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('normal')">NORMAL</button>
+            <button class="tab-btn gold-tab" onclick="switchTab('golden')">GOLDEN</button>
+        </div>
+    </header>
+
+    <div class="main-container" id="almanac-content">
+        </div>
+
+    <script src="configuration.js"></script>
+    <script>
+        const contentDiv = document.getElementById('almanac-content');
+        const btns = document.querySelectorAll('.tab-btn');
+        let currentTab = 'normal';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update Buttons
+            btns.forEach(btn => {
+                btn.classList.remove('active');
+                if(tab === 'normal' && !btn.classList.contains('gold-tab')) btn.classList.add('active');
+                if(tab === 'golden' && btn.classList.contains('gold-tab')) btn.classList.add('active');
+            });
+
+            render();
+        }
+
+        function getZoneName(minDepth, isGold) {
+            if (isGold) {
+                if (minDepth >= 2400) return "Gold Rush III (Midnight)";
+                if (minDepth >= 1000) return "Gold Rush II (Twilight)";
+                return "Gold Rush I (Sunlight)";
+            } else {
+                if (minDepth >= 4800) return "The Trench";
+                if (minDepth >= 2800) return "The Abyss";
+                if (minDepth >= 1300) return "Midnight Zone";
+                if (minDepth >= 500) return "Twilight Zone";
+                return "Sunlight Zone";
+            }
+        }
+
+        function render() {
+            if (typeof fishConfig === 'undefined') {
+                contentDiv.innerHTML = '<h2 style="color:red; text-align:center;">Error: configuration.js not found.</h2>';
+                return;
+            }
+
+            contentDiv.innerHTML = '';
+
+            // 1. Filter Fish based on tab
+            const filteredFish = fishConfig.filter(f => {
+                const isGold = (f.effect === 'gold');
+                return currentTab === 'golden' ? isGold : !isGold;
+            });
+
+            // 2. Group by Zone
+            const grouped = {};
+            
+            // Define sort order for zones to appear in correct depth order
+            const zoneOrder = [
+                "Sunlight Zone", "Gold Rush I (Sunlight)",
+                "Twilight Zone", "Gold Rush II (Twilight)",
+                "Midnight Zone", "Gold Rush III (Midnight)",
+                "The Abyss", "The Trench"
+            ];
+
+            filteredFish.forEach(fish => {
+                const zone = getZoneName(fish.minDepth, currentTab === 'golden');
+                if (!grouped[zone]) grouped[zone] = [];
+                grouped[zone].push(fish);
+            });
+
+            // 3. Render Groups in Order
+            zoneOrder.forEach(zoneName => {
+                if (!grouped[zoneName]) return;
+
+                const fishList = grouped[zoneName];
+                // Sort by depth inside the group
+                fishList.sort((a, b) => a.minDepth - b.minDepth);
+
+                // Create HTML Section
+                const section = document.createElement('div');
+                section.className = 'zone-section';
+                
+                const isGoldZone = zoneName.includes("Gold");
+                const titleClass = isGoldZone ? 'zone-title gold-zone-title' : 'zone-title';
+
+                let gridHTML = '';
+                fishList.forEach(fish => {
+                    const isGold = (fish.effect === 'gold');
+                    const displayName = fish.type.replace(/-/g, ' ').replace(/_/g, ' ');
+                    const depthText = `${fish.minDepth}m - ${fish.maxDepth ? fish.maxDepth + 'm' : '???'}`;
+
+                    gridHTML += `
+                        <div class="fish-card ${isGold ? 'is-gold' : ''}">
+                            <div class="fish-img-container">
+                                <img src="${fish.imgSrc}" class="fish-img" alt="${fish.type}">
+                            </div>
+                            <div class="fish-name">${displayName}</div>
+                            <div class="fish-details">
+                                Speed: ${fish.speed}<br>
+                                Score: ${fish.scoreBonus}
+                                <br>
+                                <span class="depth-badge">${depthText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                section.innerHTML = `
+                    <div class="${titleClass}">${zoneName}</div>
+                    <div class="grid">${gridHTML}</div>
+                `;
+
+                contentDiv.appendChild(section);
+            });
+
+            if (filteredFish.length === 0) {
+                contentDiv.innerHTML = '<h2 style="text-align:center; margin-top:50px; color:#666;">No fishes found for this category.</h2>';
+            }
+        }
+
+        // Initial Render
+        render();
+
+    </script>
+
+</body>
+</html>
