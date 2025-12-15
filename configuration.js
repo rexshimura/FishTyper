@@ -203,7 +203,7 @@ const fishConfig = [
 // ==================================================
     {
         type: "sardine",           imgSrc: "public/21.png",
-        speed: 2,               scale: 0.9,             scoreBonus: 25,
+        speed: 1.9,               scale: 0.9,             scoreBonus: 25,
         minDepth: 2815,         maxDepth: 4000,         spawnWeight: 50,
         lenMin: 1,              lenMax: 2,              effect: null
     },
