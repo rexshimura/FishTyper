@@ -161,6 +161,7 @@
             justify-content: space-between;
             transition: transform 0.2s, background 0.2s;
             position: relative;
+            cursor: pointer; /* Changed to pointer */
         }
 
         .fish-card:hover {
@@ -222,6 +223,104 @@
         .is-gold .fish-name { color: #ffd700; text-shadow: 0 0 5px #ff8c00; }
         .is-gold .fish-img { filter: drop-shadow(0 0 5px gold); }
 
+        /* --- MODAL (POPUP) --- */
+        #fish-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #fish-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 10, 20, 0.98));
+            border: 2px solid #00bfff;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #fish-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Gold Variant for Modal */
+        .modal-content.gold-theme {
+            border-color: #ffd700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+        }
+        .modal-content.gold-theme .modal-title { color: #ffd700; text-shadow: 0 0 10px gold; }
+        .modal-content.gold-theme .stat-value { color: #ffd700; }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2rem;
+            color: #ff4757;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .modal-close:hover { transform: scale(1.2); color: #ff6b6b; }
+
+        .modal-img-box {
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+
+        .modal-img {
+            max-height: 100%;
+            max-width: 100%;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+            transform: scale(1.5); /* Make fish look big in modal */
+        }
+
+        .modal-title {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            color: #00bfff;
+            letter-spacing: 3px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            text-align: left;
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 1.2rem; color: white; font-weight: bold; }
+
     </style>
 </head>
 <body>
@@ -236,12 +335,64 @@
     </header>
 
     <div class="main-container" id="almanac-content">
+    </div>
+
+    <div id="fish-modal" onclick="closeModal(event)">
+        <div class="modal-content" id="modal-box">
+            <span class="modal-close" onclick="forceCloseModal()">×</span>
+            
+            <div class="modal-img-box">
+                <img src="" id="m-img" class="modal-img" alt="Fish">
+            </div>
+            
+            <h2 id="m-title" class="modal-title">Unknown</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Depth Range</span>
+                    <span id="m-depth" class="stat-value">0m - 0m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Score Value</span>
+                    <span id="m-score" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Swim Speed</span>
+                    <span id="m-speed" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Word Length</span>
+                    <span id="m-len" class="stat-value">3 - 5 chars</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Rarity Weight</span>
+                    <span id="m-rarity" class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Effect</span>
+                    <span id="m-effect" class="stat-value">None</span>
+                </div>
+            </div>
         </div>
+    </div>
 
     <script src="configuration.js"></script>
     <script>
         const contentDiv = document.getElementById('almanac-content');
         const btns = document.querySelectorAll('.tab-btn');
+        
+        // Modal Elements
+        const modal = document.getElementById('fish-modal');
+        const modalBox = document.getElementById('modal-box');
+        const mImg = document.getElementById('m-img');
+        const mTitle = document.getElementById('m-title');
+        const mDepth = document.getElementById('m-depth');
+        const mScore = document.getElementById('m-score');
+        const mSpeed = document.getElementById('m-speed');
+        const mLen = document.getElementById('m-len');
+        const mRarity = document.getElementById('m-rarity');
+        const mEffect = document.getElementById('m-effect');
+
         let currentTab = 'normal';
 
         function switchTab(tab) {
@@ -257,6 +408,46 @@
             render();
         }
 
+        // --- MODAL LOGIC ---
+        function openModal(fishType) {
+            if (typeof fishConfig === 'undefined') return;
+            const fish = fishConfig.find(f => f.type === fishType);
+            if(!fish) return;
+
+            // Populate Data
+            mImg.src = fish.imgSrc;
+            mTitle.innerText = fish.type.replace(/-/g, ' ').replace(/_/g, ' ');
+            
+            mDepth.innerText = `${fish.minDepth}m - ${fish.maxDepth ? fish.maxDepth + 'm' : '???'}`;
+            mScore.innerText = fish.scoreBonus + " pts";
+            mSpeed.innerText = fish.speed;
+            mLen.innerText = `${fish.lenMin} - ${fish.lenMax} chars`;
+            mRarity.innerText = fish.spawnWeight > 0 ? fish.spawnWeight : "Special Event";
+            
+            // Effect formatting
+            if(fish.effect === 'gold') {
+                mEffect.innerText = "GOLDEN (Bonus Points)";
+                modalBox.classList.add('gold-theme');
+            } else {
+                mEffect.innerText = "Standard";
+                modalBox.classList.remove('gold-theme');
+            }
+
+            // Show Modal
+            modal.classList.add('active');
+        }
+
+        function closeModal(e) {
+            if(e.target === modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function forceCloseModal() {
+            modal.classList.remove('active');
+        }
+
+        // --- RENDER LOGIC ---
         function getZoneName(minDepth, isGold) {
             if (isGold) {
                 if (minDepth >= 2400) return "Gold Rush III (Midnight)";
@@ -279,16 +470,13 @@
 
             contentDiv.innerHTML = '';
 
-            // 1. Filter Fish based on tab
             const filteredFish = fishConfig.filter(f => {
                 const isGold = (f.effect === 'gold');
                 return currentTab === 'golden' ? isGold : !isGold;
             });
 
-            // 2. Group by Zone
             const grouped = {};
             
-            // Define sort order for zones to appear in correct depth order
             const zoneOrder = [
                 "Sunlight Zone", "Gold Rush I (Sunlight)",
                 "Twilight Zone", "Gold Rush II (Twilight)",
@@ -302,7 +490,6 @@
                 grouped[zone].push(fish);
             });
 
-            // 3. Render Groups in Order
             zoneOrder.forEach(zoneName => {
                 if (!grouped[zoneName]) return;
 
@@ -310,7 +497,6 @@
                 // Sort by depth inside the group
                 fishList.sort((a, b) => a.minDepth - b.minDepth);
 
-                // Create HTML Section
                 const section = document.createElement('div');
                 section.className = 'zone-section';
                 
@@ -323,15 +509,15 @@
                     const displayName = fish.type.replace(/-/g, ' ').replace(/_/g, ' ');
                     const depthText = `${fish.minDepth}m - ${fish.maxDepth ? fish.maxDepth + 'm' : '???'}`;
 
+                    // Add click handler to open modal
                     gridHTML += `
-                        <div class="fish-card ${isGold ? 'is-gold' : ''}">
+                        <div class="fish-card ${isGold ? 'is-gold' : ''}" onclick="openModal('${fish.type}')">
                             <div class="fish-img-container">
                                 <img src="${fish.imgSrc}" class="fish-img" alt="${fish.type}">
                             </div>
                             <div class="fish-name">${displayName}</div>
                             <div class="fish-details">
-                                Speed: ${fish.speed}<br>
-                                Score: ${fish.scoreBonus}
+                                <span style="font-size:0.7rem; opacity:0.7;">CLICK FOR INFO</span>
                                 <br>
                                 <span class="depth-badge">${depthText}</span>
                             </div>
